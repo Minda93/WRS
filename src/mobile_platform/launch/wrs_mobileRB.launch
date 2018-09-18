@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<launch> 
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <rosparam command="load" file="$(find mobile_platform)/config/test1.yaml" ns="mobile_platform/"/>
+</launch>

@@ -146,5 +146,77 @@ document.getElementsByName("strategy_button")[5].addEventListener("click", funct
     topicBehavior.Pub(msg);
 });
 
+/*========================================================*/
+/*
+    scan_black node
+ */
+/*--------------------------------------------------------*/
+/* param */
 
+// middleY
+document.getElementsByName("ScanElement")[0].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanMiddleY.Pub(msg);
+});
+document.getElementsByName("ScanElement")[1].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanMiddleY.Pub(msg);
+});
+
+// range
+document.getElementsByName("ScanElement")[2].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanRange.Pub(msg);
+});
+document.getElementsByName("ScanElement")[3].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanRange.Pub(msg);
+});
+
+// threshold
+document.getElementsByName("ScanElement")[4].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanThreshold.Pub(msg);
+});
+document.getElementsByName("ScanElement")[5].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanThreshold.Pub(msg);
+});
+
+// weight
+document.getElementsByName("ScanElement")[6].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanWeight.Pub(msg);
+});
+document.getElementsByName("ScanElement")[7].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicScanWeight.Pub(msg);
+});
+
+/*--------------------------------------------------------*/
+/* save */
+
+document.getElementById("scan_save").addEventListener("click", function(){
+    console.log("SCAN SAVE")
+    var msg = new ROSLIB.Message({
+        data: true
+    });
+    topicScanSave.Pub(msg);
+});
 

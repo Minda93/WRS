@@ -1,4 +1,3 @@
-
 /* 
 Vision1.subscribe(function(msg) {
     return msg.data
@@ -24,6 +23,11 @@ class RosTopic {
     // }
 }
 // =======================================================================
+var delay = function (s) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(resolve, s);
+    });
+};
 class RosParam {
     constructor(rosConnect, name) {
         this.object = new ROSLIB.Param({
@@ -36,10 +40,13 @@ class RosParam {
         this.object.set(value);
     }
 
-    Get(){
-        this.object.get(function(value) {
-            return value;
-        });
+    Get() {
+        var _this = this;
+        return new Promise(function(resolve) {
+            _this.object.get(function (value) {
+                resolve(value);
+            });
+        }); 
     }
 }
 // =======================================================================
@@ -49,7 +56,7 @@ var request = new ROSLIB.ServiceRequest({
 }); 
 */
 
-class RosService{
+class RosService {
     constructor(rosConnect, name, type) {
         this.object = new ROSLIB.Service({
             ros: rosConnect,
@@ -58,8 +65,8 @@ class RosService{
         });
     }
 
-    Call(request){
-        this.object.callService(request, function(res) {
+    Call(request) {
+        this.object.callService(request, function (res) {
             return res;
         });
     }

@@ -48,7 +48,7 @@ class NodeHandle(object):
         # subscriber
         rospy.Subscriber("usb_cam/image_raw",Image,self.Sub_Img)
 
-        rospy.Subscriber("scan_black/save",Bool,self.Save_Param)
+        rospy.Subscriber("scan_black/scanSave",Bool,self.Save_Param)
 
         rospy.Subscriber("scan_black/middleY",Int32,self.Sub_MiddleY)
         rospy.Subscriber("scan_black/range",Int32,self.Sub_Range)
@@ -79,10 +79,11 @@ class NodeHandle(object):
         self.__loadParam = True
     
     def Save_Param(self,msg):
+        self.Set_Param()
         if (rospy.has_param('mobile_platform')):
             print('dump')
             subprocess.call(['rosparam','dump',FILENAME,'/mobile_platform'])
-            self.Load_Param()
+            # self.Load_Param()
         else:
             print('Not found')
             

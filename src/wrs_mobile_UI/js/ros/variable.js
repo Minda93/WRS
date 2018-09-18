@@ -52,4 +52,15 @@ var topicCmdvel = new RosTopic(ros, '/motion/cmd_vel', '/geometry_msgs/Twist')
 
 var topicStart = new RosTopic(ros, '/scan_black/scan_start', '/std_msgs/Bool')
 var topicBehavior = new RosTopic(ros, '/scan_black/strategy_behavior', '/std_msgs/Int32')
+
+var topicScanMiddleY = new RosTopic(ros, '/scan_black/middleY', '/std_msgs/Int32')
+var topicScanRange = new RosTopic(ros, '/scan_black/range', '/std_msgs/Int32')
+var topicScanThreshold = new RosTopic(ros, '/scan_black/threshold', '/std_msgs/Int32')
+var topicScanWeight = new RosTopic(ros, '/scan_black/weight', '/std_msgs/Int32')
+var topicScanSave = new RosTopic(ros, '/scan_black/scanSave', '/std_msgs/Bool')
 // =======================================================================
+/* ros param
+
+*/
+
+var paramScanBlack = new RosParam(ros,'/mobile_platform/scan_black')

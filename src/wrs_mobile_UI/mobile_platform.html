@@ -34,7 +34,8 @@
             <div class="modal-header">
                 <h2 class="modal-title">WRS_Mobile (請確保網路順暢 要不然有機會暴衝)</h2>
                 <div id="WifiButton">
-                    <i class="fa fa-3x fa-wifi" id="WifiButton-style" aria-hidden="true" data-toggle="modal" data-target="#connect_Robot"></i>
+                    <i class="fa fa-3x fa-wifi" id="WifiButton-style" aria-hidden="true" data-toggle="modal"
+                        data-target="#connect_Robot"></i>
                 </div>
             </div>
             <div class="modal-body UI_BodySize">
@@ -48,20 +49,22 @@
                                             <tr>
                                                 <td>
                                                     <div>
-                                                        <input type="radio" id="Scan" name="Pbutton" href="#scan_setting" tabindex="-1" />
+                                                        <input type="radio" id="Scan" name="Pbutton" href="#scan_setting"
+                                                            tabindex="-1" />
                                                         <label for="Scan">Scan</label>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <input type="radio" id="QRcode" name="Pbutton" href="#qrcode_setting" tabindex="-1" />
+                                                        <input type="radio" id="QRcode" name="Pbutton" href="#qrcode_setting"
+                                                            tabindex="-1" />
                                                         <label for="QRcode">QRcode</label>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <input type="radio" id="Strategy" name="Pbutton" class="active" href="#strategy_setting" tabindex="-1" checked="checked"
-                                                        />
+                                                        <input type="radio" id="Strategy" name="Pbutton" class="active"
+                                                            href="#strategy_setting" tabindex="-1" checked="checked" />
                                                         <label for="Strategy">Strategy</label>
                                                     </div>
                                                 </td>
@@ -73,7 +76,69 @@
                                     <td>
                                         <div id="param_setting" class="tab-content">
                                             <div id="scan_setting" class="tab-pane fade">
-                                                <label>None</label>
+                                                <table class="param_table">
+                                                    <tr class="scan_param_tr">
+                                                        <td>
+                                                            <label>MiddleY</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="ScanElement" min="0" max="480"
+                                                                value="0" oninput="rangeValue(this.value,this.name,1);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="ScanElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="480" oninput="rangeValue(this.value,this.name,0);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="scan_param_tr">
+                                                        <td>
+                                                            <label>Range</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="ScanElement" min="0" max="239"
+                                                                value="0" oninput="rangeValue(this.value,this.name,3);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="ScanElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="239" oninput="rangeValue(this.value,this.name,2);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="scan_param_tr">
+                                                        <td>
+                                                            <label>Threshold</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="ScanElement" min="0" max="255"
+                                                                value="0" oninput="rangeValue(this.value,this.name,5);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="ScanElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="255" oninput="rangeValue(this.value,this.name,4);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="scan_param_tr">
+                                                        <td>
+                                                            <label>Weight</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="ScanElement" min="0" max="100"
+                                                                value="0" oninput="rangeValue(this.value,this.name,7);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="ScanElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="100" oninput="rangeValue(this.value,this.name,6);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <button id="scan_save" class="btn btn-primary" value="0">SAVE</button>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                             <div id="qrcode_setting" class="tab-pane fade">
                                                 <label>None</label>
@@ -89,21 +154,26 @@
                                                     </tr>
                                                     <tr class="strategy_button_tr">
                                                         <td>
-                                                            <button name="strategy_button" class="btn btn-primary" value="0">mobile</button>
+                                                            <button name="strategy_button" class="btn btn-primary"
+                                                                value="0">mobile</button>
                                                         </td>
                                                         <td>
-                                                            <button name="strategy_button" class="btn btn-primary" value="1">correction</button>
+                                                            <button name="strategy_button" class="btn btn-primary"
+                                                                value="1">correction</button>
                                                         </td>
                                                         <td>
-                                                            <button name="strategy_button" class="btn btn-primary" value="2">platform</button>
+                                                            <button name="strategy_button" class="btn btn-primary"
+                                                                value="2">platform</button>
                                                         </td>
                                                     </tr>
                                                     <tr class="strategy_button_tr">
                                                         <td>
-                                                            <button name="strategy_button" class="btn btn-primary" value="3">next</button>
+                                                            <button name="strategy_button" class="btn btn-primary"
+                                                                value="3">next</button>
                                                         </td>
                                                         <td>
-                                                            <button name="strategy_button" class="btn btn-primary" value="4">home</button>
+                                                            <button name="strategy_button" class="btn btn-primary"
+                                                                value="4">home</button>
                                                         </td>
                                                         <td>
                                                             <button name="strategy_button" class="btn btn-primary">manual</button>
@@ -179,15 +249,19 @@
                                             <tr>
                                                 <td>
                                                     <div>
-                                                        <label id="manual_button" class="fa-3x fa fa-gamepad" aria-hidden="true">
-                                                            <input id="manual_button_checked" type="checkbox" onclick="Manual_button()" style='display:none;' />
+                                                        <label id="manual_button" class="fa-3x fa fa-gamepad"
+                                                            aria-hidden="true">
+                                                            <input id="manual_button_checked" type="checkbox" onclick="Manual_button()"
+                                                                style='display:none;' />
                                                         </label>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <label id="manual_keyboard" class="fa-3x fa fa-keyboard-o" aria-hidden="true">
-                                                            <input id="manual_keyboard_checked" type="checkbox" checked="false" style='display:none;' />
+                                                        <label id="manual_keyboard" class="fa-3x fa fa-keyboard-o"
+                                                            aria-hidden="true">
+                                                            <input id="manual_keyboard_checked" type="checkbox" checked="false"
+                                                                style='display:none;' />
                                                         </label>
                                                     </div>
                                                 </td>
@@ -207,11 +281,12 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <input type="range" name="SpeedElement" min="0" max="100" value="0" oninput="rangeValue(this.value,this.name,1);" />
+                                                    <input type="range" name="SpeedElement" min="0" max="100" value="0"
+                                                        oninput="rangeValue(this.value,this.name,1);" />
                                                 </td>
                                                 <td>
-                                                    <input id="SpeedInput" name="SpeedElement" placeholder="Speed" value="0" type="number" min="0" max="100" oninput="rangeValue(this.value,this.name,0);"
-                                                    />
+                                                    <input id="SpeedInput" name="SpeedElement" placeholder="Speed"
+                                                        value="0" type="number" min="0" max="100" oninput="rangeValue(this.value,this.name,0);" />
                                                 </td>
                                             </tr>
                                         </table>
@@ -271,6 +346,7 @@
     <script src="js/ros/class.js"></script>
     <script src="js/ros/variable.js"></script>
     <script src="js/ros/rostopic.js"></script>
+    <script src="js/ros/rosparam.js"></script>
     <!-- lib -->
     <script src="js/lib/Joystick.js"></script>
     <script src="js/lib/init.js"></script>
