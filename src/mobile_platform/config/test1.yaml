@@ -1,1 +1,1 @@
-scan_black: {middleY: 120, range: 60, scanNum: 7, sliceNum: 5, threshold: 150, weight: 33}
+scan_black: {middleY: 100, range: 60, scanNum: 7, sliceNum: 10, threshold: 173, weight: 33}
