@@ -456,10 +456,10 @@ int main(int argc,char **argv)
             if(haha!=0)
             {
                 stationary = false;
-                printf("0\n");
+                // printf("0\n");
             }else{
                 stationary = true;
-                printf("1\n");
+                // printf("1\n");
             }
 
             //Render
@@ -545,7 +545,8 @@ int main(int argc,char **argv)
         inertia.yaw = DEGREES_TO_RADIANS(degree);
 
         std_msgs::Float64 imu_angle;
-        imu_angle.data = degree;
+        double inv_degree = 360-degree;
+        imu_angle.data = inv_degree>180?inv_degree-360:inv_degree;
         imu_pub.publish(imu_angle);
 
         // imu_pub.publish(inertia);
