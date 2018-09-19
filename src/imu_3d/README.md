@@ -18,6 +18,13 @@ Defaults env_keep += "ROS_MASTER_URI"
 ```bash
 sudo cp src/imu_3d/rule/01-imu.rules /etc/udev/rules.d/ 
 ```
+
+5. 重起udev
+```bash
+sudo service udev reload
+sudo service udev restart
+```
+
 5. 執行程式
 
 ```bash
