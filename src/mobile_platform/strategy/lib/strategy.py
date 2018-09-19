@@ -21,6 +21,9 @@ PLATFORM = 2
 NEXT_POINT = 3
 HOME = 4
 MANUAL = 5
+GO_POINT = 6
+ROTATE = 7
+RETURN_POINT = 8
 
 # FLAG 
 CONTROL = 'PIDCONTROL'
@@ -49,6 +52,8 @@ class Strategy(object):
         # self._kd = 4.0
         # self.prevIntegral = 0
         # self.lastError = 0
+
+        self.rotateAng = 0
 
     def Process(self):
         if(self._param.behavior == MOBILE_ROBOT):
