@@ -9,6 +9,7 @@ import numpy as np
 from lib.nodehandle import NodeHandle
 from lib.pidcontrol import PIDControl,PIDControl_Y,PIDControl_Yaw
 from lib.fuzzycontrol import FUZZYControl
+from lib.counter import TimeCounter
 
 # rostopic msg
 from geometry_msgs.msg import Twist
@@ -24,10 +25,21 @@ MANUAL = 5
 ROTATE = 6
 GO_POINT = 7
 RETURN_POINT = 8
+CROSS = 9
+INIT = 10
 
 # FLAG 
 CONTROL = 'PIDCONTROL'
 # CONTROL = 'FUZZYCONTROL'
+
+'''
+    HOME -> FIRST
+        INIT -> MOBILE -> CORRECTION_0 -> ROTATE_90 -> CORRECTION_90 -> PLATFORM
+    FIRST -> SECOND 
+        NEXT -> ROTATE_0 -> CROSS -> MOBILE -> CORRECTION_0 -> ROTATE_90 -> CORRECTION_90 -> PLATFORM
+    POINT -> HOME
+        ???
+'''
 
 class Strategy(object):
     def __init__(self):
@@ -52,8 +64,16 @@ class Strategy(object):
         # self._kd = 4.0
         # self.prevIntegral = 0
         # self.lastError = 0
-
+        
+        ''' rotate  '''
         self.rotateAng = 0
+
+        ''' go_point '''
+        self.timer = TimeCounter(time = 1.2)
+
+        ''' home '''
+        self.homeFlag = 0
+        self.homeTimes = 0
 
     def Process(self):
         if(self._param.behavior == MOBILE_ROBOT):
@@ -93,18 +113,28 @@ class Strategy(object):
         elif(self._param.behavior == ROTATE):
             if(self._param.loadParam):
                 self.Change_Behavior()
-            print('ROTATE')
+            self.Rotate_Strategy()
 
         elif(self._param.behavior == GO_POINT):
             if(self._param.loadParam):
                 self.Change_Behavior()
+            self.Go_Point_Strategy()
             print('GO_POINT')
 
         elif(self._param.behavior == RETURN_POINT):
             if(self._param.loadParam):
                 self.Change_Behavior()
+            self.Return_Point_Strategy()
             print('RETURN_POINT')
-            
+        elif(self._param.behavior == CROSS):
+            if(self._param.loadParam):
+                self.Change_Behavior()
+            self.Cross_Strategy()
+        elif(self._param.behavior == INIT):
+            if(self._param.loadParam):
+                self.Change_Behavior()
+            self.Init_Strategy()
+            print('Init')
         else:
             print("Don't have Behavior")
             self.Robot_Stop()
@@ -145,11 +175,9 @@ class Strategy(object):
                         
                     ''' Method 5 '''
                     y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
-                    # x = math.sqrt(self._param.minVel*self._param.minVel-y*y)
-                    # x = self._param.minVel-abs(y)
                     x = (self._param.minVel - abs(y))*math.cos(math.radians(self._param.ang)) - y*math.sin(math.radians(self._param.ang))
-                    # x = math.sqrt(self._param.minVel*self._param.minVel-y*y)*math.cos(math.radians(self._param.ang)) - y*math.sin(math.radians(self._param.ang))
-                    if(abs(self._param.dis) >  1000):
+                    
+                    if(abs(self._param.dis) > 1000):
                         yaw = 0
                     else:       
                         if(abs(self._param.ang) > 3.0):
@@ -157,11 +185,6 @@ class Strategy(object):
                         else:
                             yaw = 0
 
-                    # x = 0
-                    # y = 0
-                    # yaw = 0
-                    # self.Robot_Vel([y,-x,yaw])
-                    # print(y,-x,yaw)
                     self.Robot_Vel([x,y,yaw])
                     print(x,y,yaw)
                     self.prev_dis = self._param.dis
@@ -171,8 +194,12 @@ class Strategy(object):
                     print('STOP')
                     self.state = 1
                     self.Robot_Stop()
-                    self._param.behavior = CORRECTION
-                    # self._param.behavior = PLATFORM
+
+                    if(self.homeFlag == 1):
+                        self._param.behavior = CROSS
+                    else:
+                        self._param.behavior = CORRECTION
+
                 self.pre_state = self.state
             else:
                 print('Offset track !!!!!!')
@@ -200,23 +227,28 @@ class Strategy(object):
         y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
         if(self._param.dis < 600):
             if(self._param.qrang is not None and self._param.qrang != 999):
-                if(abs(self._param.qrang) > self._param.errorAng):
-                    if(self._param.qrang > 0):
-                        x = 0
-                        # y = 0
-                        yaw = -self._param.velYaw
-                    else:
+                RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
+                if(abs(RPang) > self._param.errorAng):
+                    if(RPang > 0):
                         x = 0
                         # y = 0
                         yaw = self._param.velYaw
-                
-                    # self.Robot_Vel([y,-x,yaw])
+                    else:
+                        x = 0
+                        # y = 0
+                        yaw = -self._param.velYaw
+
                     self.Robot_Vel([x,y,yaw])
-                    print('CORRECTION','angle',self._param.qrang)
+                    print('CORRECTION','FRONT',self._param.qrang)
                 else:
                     self.Robot_Stop()
-                    self._param.behavior = PLATFORM
-                    self.initPID = 1
+                    if(self.rotateAng == 0):
+                        self._param.behavior = ROTATE
+                        self.rotateAng = 90 
+                    else:
+                        self._param.behavior = PLATFORM
+                        self.rotateAng = 0  
+                        self.initPID = 1
                     print('CORRECTION')
                 self.not_find = 0
             else:
@@ -226,13 +258,17 @@ class Strategy(object):
                     self.Robot_Stop()
                 else:
                     self.not_find = 0
-                    self._param.behavior = PLATFORM
-                    self.initPID = 1
+                    if(self.rotateAng == 0):
+                        self._param.behavior = ROTATE
+                        self.rotateAng = 90
+                    else:
+                        self._param.behavior = PLATFORM
+                        self.rotateAng = 0  
+                        self.initPID = 1
             self._param.qrang = 999
         else:
             x = 0
             yaw = 0
-            # self.Robot_Vel([y,-x,yaw])
             self.Robot_Vel([x,y,yaw])
             print('CORRECTION','dis',y)
     
@@ -247,6 +283,77 @@ class Strategy(object):
     
     def Next_Point_Strategy(self):
         print('NEXT_POINT')
+        self.Robot_Stop()
+        self._param.behavior = ROTATE
+        self.rotateAng = 0
+        
+            
+    def Rotate_Strategy(self):
+        # yaw = self.controlYaw(self._param.qrang,self._param.velYaw)
+        if(self._param.qrang is not None and self._param.qrang != 999):
+            RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
+            if(abs(RPang) > self._param.errorAng):
+                if(RPang > 0):
+                    x = 0
+                    y = 0
+                    yaw = self._param.velYaw
+                else:
+                    x = 0
+                    y = 0
+                    yaw = -self._param.velYaw
+                self.Robot_Vel([x,y,yaw])
+                print('ROTATE','angle',self._param.qrang)
+            else:
+                self.Robot_Stop()
+                if(self.rotateAng == 90):
+                    self._param.behavior = CORRECTION
+                    print('ROTATE COREECTION')
+                else:
+                    self._param.behavior = CROSS
+                    print('ROTATE CROSS')
+            self.not_find = 0
+        else:
+            print('ROTATE not find')
+            if(self.not_find < 100):
+                self.not_find += 1
+                # self.Robot_Stop()
+            else:
+                self.not_find = 0
+                if(self.rotateAng == 90):
+                    self._param.behavior = CORRECTION
+                    print('ROTATE COREECTION')
+                else:
+                    self._param.behavior = CROSS
+                    print('ROTATE CROSS')
+        self._param.qrang = 999
+    
+    def Go_Point_Strategy(self):
+        time,state = self.timer.Process()
+
+        if(state):
+            self.Robot_Stop()
+            self._param.behavior = CORRECTION
+        else:
+            x = self._param.minVel
+            y = 0
+            yaw = 0
+            self.Robot_Vel([x,y,yaw])
+
+    def Return_Point_Strategy(self):
+        time,state = self.timer.Process()
+
+        if(state):
+            self.Robot_Stop()
+            self._param.behavior = ROTATE
+            self.rotateAng = 0
+        else:
+            x = -self._param.minVel
+            y = 0
+            yaw = 0
+            self.Robot_Vel([x,y,yaw])
+    
+    def Cross_Strategy(self):
+        print('CROSS')
         if(self.pre_state == 1 and self.state == 0):
             if(self._param.scanState):
                 if(self._param.qrang is not None and self._param.qrang != 999):
@@ -271,44 +378,24 @@ class Strategy(object):
                 self._param.qrang = 999
         else:
             self.Robot_Stop()
-            print('fuck next point')
-            
-    def Rotate_Strategy(self):
-        yaw = self.controlYaw(self._param.qrang,self._param.velYaw)
-
-        if(self._param.qrang is not None and self._param.qrang != 999):
-            if(abs(self._param.qrang) > self._param.errorAng):
-                if(self._param.qrang > 0):
-                    x = 0
-                    y = 0
-                    yaw = -self._param.velYaw
-                else:
-                    x = 0
-                    y = 0
-                    yaw = self._param.velYaw+
-
-                self.Robot_Vel([x,y,yaw])
-                print('ROTATE','angle',self._param.qrang)
-            else:
-                self.Robot_Stop()
-                self._param.behavior = GO_POINT
-                self.initPID = 1
-                print('ROTATE')
-            self.not_find = 0
-        else:
-            print('ROTATE not find')
-            if(self.not_find < 100):
-                self.not_find += 1
-                self.Robot_Stop()
-            else:
-                self.not_find = 0
-                self._param.behavior = GO_POINT
-                self.initPID = 1
-        self._param.qrang = 999
-
+            print('fuck Cross')
     
+    def Init(self):
+        self.rotateAng = 0
+        self.homeFlag = 0
+        self.homeTimes = 0
+        self.Robot_Stop()
+        self._param.behavior = MOBILE_ROBOT
+            
     def Deg2Rad(self,deg):
         return deg*math.pi/180
+    
+    def Norm_Angle(angle):
+        if(angle > 180):
+            angle -= 360
+        elif(angle < -180):
+            angle +=360
+        return angle
 
     def Robot_Stop(self):
         vel = Twist()

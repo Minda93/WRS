@@ -7,15 +7,21 @@ import subprocess
 
 # rostopic msg
 from mobile_platform.msg import scaninfo
-from std_msgs.msg import Int32,Float32,Bool
+from std_msgs.msg import Int32,Float32,Float64,Bool
 from geometry_msgs.msg import Twist
 
 # define behavior 
 MOBILE_ROBOT = 0
 CORRECTION = 1
 PLATFORM = 2
-HOME = 3
-MANUAL = 4
+NEXT_POINT = 3
+HOME = 4
+MANUAL = 5
+ROTATE = 6
+GO_POINT = 7
+RETURN_POINT = 8
+CROSS = 9
+INIT = 10
 
 
 class NodeHandle(object):
@@ -53,6 +59,7 @@ class NodeHandle(object):
         rospy.Subscriber("scan_black/strategy_start",Int32,self.Sub_Start)
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
         rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
+        # rospy.Subscriber("scan_black/qrcode_angle",Float64,self.Sub_QRAngle)
     
     def Sub_ScanInfo(self,msg):
         self.__dis = msg.dis

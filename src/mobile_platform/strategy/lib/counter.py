@@ -35,7 +35,7 @@ class TimeCounter(object):
         return time, state
 
     def Counter(self,t):
-        time = t - self.__begin
+        time = t.to_sec() - self.__begin.to_sec()
 
         if(time < self.__time):
             return time, False
