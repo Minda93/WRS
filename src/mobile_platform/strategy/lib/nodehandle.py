@@ -45,6 +45,10 @@ class NodeHandle(object):
         self.__maxVel = 10.0
         self.__minVel = 15.0
         self.__velYaw = 15.0
+        self.__rotateYaw = 25.0
+
+        self.__errorRotate0 = 5.0
+        self.__errorRotate90 = 85.0
         self.__errorAng = 1.2
 
         self.__qrang = None
@@ -58,8 +62,8 @@ class NodeHandle(object):
         rospy.Subscriber("scan_black/scaninfo",scaninfo,self.Sub_ScanInfo)
         rospy.Subscriber("scan_black/strategy_start",Int32,self.Sub_Start)
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
-        rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
-        # rospy.Subscriber("scan_black/qrcode_angle",Float64,self.Sub_QRAngle)
+        # rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
+        rospy.Subscriber("/imu_data",Float64,self.Sub_QRAngle)
     
     def Sub_ScanInfo(self,msg):
         self.__dis = msg.dis
@@ -140,12 +144,40 @@ class NodeHandle(object):
         self.__velYaw = value
     
     @property
+    def rotateYaw(self):
+        return self.__rotateYaw
+
+    @rotateYaw.setter
+    def rotateYaw(self, value):
+        self.__rotateYaw = value
+
+
+
+    @property
+    def errorRotate0(self):
+        return self.__errorRotate0
+
+    @errorRotate0.setter
+    def errorRotate0(self, value):
+        self.__errorRotate0 = value
+    
+    @property
+    def errorRotate90(self):
+        return self.__errorRotate90
+
+    @errorRotate90.setter
+    def errorRotate90(self, value):
+        self.__errorRotate90 = value
+    
+    @property
     def errorAng(self):
         return self.__errorAng
 
     @errorAng.setter
     def errorAng(self, value):
         self.__errorAng = value
+
+
     
     @property
     def qrang(self):

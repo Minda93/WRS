@@ -29,7 +29,7 @@ class QRcode(object):
             
             # 二值化
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
-            ret,thresh = cv2.threshold(imgray,180,255,cv2.THRESH_BINARY)
+            ret,thresh = cv2.threshold(imgray,80,255,cv2.THRESH_BINARY)
             eroded = cv2.erode(thresh,kernel)
             thresh = cv2.dilate(eroded,kernel)
             # thresh = cv2.dilate(thresh,kernel)
@@ -99,6 +99,8 @@ class QRcode(object):
                         outlier = A
                     dist = self.Line_Equation(mc[median1],mc[median2],mc[outlier])
                     slope = self.Line_Slope(mc[median1],mc[median2])
+                    center_dis = self.Calculator_Center_Dis(mc[median2],mc[outlier])
+                    print(center_dis)
                     self.Pub_Angle(True,dist,slope)
                     
                     if(QRANGLE_FLAG):
@@ -114,7 +116,8 @@ class QRcode(object):
                         elif(slope > 0 and dist > 0):
                             print(4,(math.atan(slope)*180/3.14)-135)
                 else:
-                    print('Mark too low')
+                    pass
+                    # print('Mark too low')
                     # self.Pub_Angle(False,0,0)
             else:
                 print('Not Found')
@@ -153,6 +156,16 @@ class QRcode(object):
             return (dy/dx)
         else:
             return 999
+
+    def Calculator_Center_Dis(self,P,Q):
+        center = (int((P[0]+Q[0])/2),int((P[1]+Q[1])/2))
+        rows,cols = self._param.img.shape[:2]
+        img_center = (int(cols/2),int(rows/2))
+
+        return self.PQ_Distance(center,img_center)      
+        
+
+
         
     def Pub_Angle(self,find,dist,slope):
         if(find):

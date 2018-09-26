@@ -19,6 +19,7 @@ class NodeHandle(object):
 
         self.__start = 0
         self.__ang = 999
+        self.__dis = None
 
         self.__loadParam = False
 
@@ -57,3 +58,11 @@ class NodeHandle(object):
     @ang.setter
     def ang(self, value):
         self.__ang = value
+    
+    @property
+    def dis(self):
+        return self.__dis
+
+    @dis.setter
+    def dis(self, value):
+        self.__dis = value

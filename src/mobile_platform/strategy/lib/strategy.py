@@ -69,7 +69,7 @@ class Strategy(object):
         self.rotateAng = 0
 
         ''' go_point '''
-        self.timer = TimeCounter(time = 1.2)
+        self.timer = TimeCounter(time = 0.5)
 
         ''' home '''
         self.homeFlag = 0
@@ -232,22 +232,26 @@ class Strategy(object):
                     if(RPang > 0):
                         x = 0
                         # y = 0
-                        yaw = self._param.velYaw
+                        # yaw = self._param.velYaw
+                        yaw = self._param.rotateYaw
                     else:
                         x = 0
                         # y = 0
-                        yaw = -self._param.velYaw
+                        # yaw = -self._param.velYaw
+                        yaw = -self._param.rotateYaw
 
                     self.Robot_Vel([x,y,yaw])
                     print('CORRECTION','FRONT',self._param.qrang)
                 else:
                     self.Robot_Stop()
+                    self.Robot_Stop()
+                    self.Robot_Stop()
                     if(self.rotateAng == 0):
                         self._param.behavior = ROTATE
-                        self.rotateAng = 90 
+                        self.rotateAng = self._param.errorRotate90
                     else:
                         self._param.behavior = PLATFORM
-                        self.rotateAng = 0  
+                        self.rotateAng = self._param.errorRotate0
                         self.initPID = 1
                     print('CORRECTION')
                 self.not_find = 0
@@ -260,10 +264,10 @@ class Strategy(object):
                     self.not_find = 0
                     if(self.rotateAng == 0):
                         self._param.behavior = ROTATE
-                        self.rotateAng = 90
+                        self.rotateAng = self._param.errorRotate90
                     else:
                         self._param.behavior = PLATFORM
-                        self.rotateAng = 0  
+                        self.rotateAng = self._param.errorRotate0  
                         self.initPID = 1
             self._param.qrang = 999
         else:
@@ -296,14 +300,18 @@ class Strategy(object):
                 if(RPang > 0):
                     x = 0
                     y = 0
-                    yaw = self._param.velYaw
+                    # yaw = self._param.velYaw
+                    yaw = self._param.rotateYaw
                 else:
                     x = 0
                     y = 0
-                    yaw = -self._param.velYaw
+                    # yaw = -self._param.velYaw
+                    yaw = -self._param.rotateYaw
                 self.Robot_Vel([x,y,yaw])
                 print('ROTATE','angle',self._param.qrang)
             else:
+                self.Robot_Stop()
+                self.Robot_Stop()
                 self.Robot_Stop()
                 if(self.rotateAng == 90):
                     self._param.behavior = CORRECTION
@@ -390,7 +398,7 @@ class Strategy(object):
     def Deg2Rad(self,deg):
         return deg*math.pi/180
     
-    def Norm_Angle(angle):
+    def Norm_Angle(self,angle):
         if(angle > 180):
             angle -= 360
         elif(angle < -180):

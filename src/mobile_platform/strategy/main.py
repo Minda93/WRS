@@ -20,7 +20,7 @@ def main():
     robot = Strategy()
 
     # 30 hz
-    rate = rospy.Rate(30)
+    rate = rospy.Rate(25)
 
     while not rospy.is_shutdown():
         if(robot._param.start):
