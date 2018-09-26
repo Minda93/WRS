@@ -69,7 +69,7 @@ class Strategy(object):
         self.rotateAng = 0
 
         ''' go_point '''
-        self.timer = TimeCounter(time = 0.5)
+        self.timer = TimeCounter(time = 0.8)
 
         ''' home '''
         self.homeFlag = 0
@@ -313,7 +313,7 @@ class Strategy(object):
                 self.Robot_Stop()
                 self.Robot_Stop()
                 self.Robot_Stop()
-                if(self.rotateAng == 90):
+                if(self.rotateAng == self._param.errorRotate90):
                     self._param.behavior = CORRECTION
                     print('ROTATE COREECTION')
                 else:
@@ -327,7 +327,7 @@ class Strategy(object):
                 # self.Robot_Stop()
             else:
                 self.not_find = 0
-                if(self.rotateAng == 90):
+                if(self.rotateAng == self._param.errorRotate90):
                     self._param.behavior = CORRECTION
                     print('ROTATE COREECTION')
                 else:
@@ -362,33 +362,44 @@ class Strategy(object):
     
     def Cross_Strategy(self):
         print('CROSS')
-        if(self.pre_state == 1 and self.state == 0):
-            if(self._param.scanState):
-                if(self._param.qrang is not None and self._param.qrang != 999):
-                    x = self._param.minVel
-                    y = 0
-                    yaw = 0
-                    self.not_find = 0
-                    # self.Robot_Vel([y,-x,yaw])
-                    self.Robot_Vel([x,y,yaw])
-                elif(self.not_find > 60):
-                    self.Robot_Stop()
-                    self._param.behavior = MOBILE_ROBOT
-                    self.not_find = 0
-                        # print('next point not find line')
-                else:
-                    self.not_find +=1
-                    x = self._param.minVel
-                    y = 0
-                    yaw = 0
-                    # self.Robot_Vel([y,-x,yaw])
-                    self.Robot_Vel([x,y,yaw])
-                self._param.qrang = 999
-        else:
+        time,state = self.timer.Process()
+
+        if(state):
             self.Robot_Stop()
-            print('fuck Cross')
+            self._param.behavior = MOBILE_ROBOT
+            self.rotateAng = 0
+        else:
+            x = self._param.minVel
+            y = 0
+            yaw = 0
+            self.Robot_Vel([x,y,yaw])
+        # if(self.pre_state == 1 and self.state == 0):
+        #     if(self._param.scanState):
+        #         if(self._param.qrang is not None and self._param.qrang != 999):
+        #             x = self._param.minVel
+        #             y = 0
+        #             yaw = 0
+        #             self.not_find = 0
+        #             # self.Robot_Vel([y,-x,yaw])
+        #             self.Robot_Vel([x,y,yaw])
+        #         elif(self.not_find > 60):
+        #             self.Robot_Stop()
+        #             self._param.behavior = MOBILE_ROBOT
+        #             self.not_find = 0
+        #                 # print('next point not find line')
+        #         else:
+        #             self.not_find +=1
+        #             x = self._param.minVel
+        #             y = 0
+        #             yaw = 0
+        #             # self.Robot_Vel([y,-x,yaw])
+        #             self.Robot_Vel([x,y,yaw])
+        #         self._param.qrang = 999
+        # else:
+        #     self.Robot_Stop()
+        #     print('fuck Cross')
     
-    def Init(self):
+    def Init_Strategy(self):
         self.rotateAng = 0
         self.homeFlag = 0
         self.homeTimes = 0

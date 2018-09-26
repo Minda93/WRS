@@ -41,7 +41,7 @@ class NodeHandle(object):
         self.__scanState = None
 
         self.__start = 1
-        self.__behavior = MOBILE_ROBOT
+        self.__behavior = INIT
         self.__maxVel = 10.0
         self.__minVel = 15.0
         self.__velYaw = 15.0
@@ -49,7 +49,7 @@ class NodeHandle(object):
 
         self.__errorRotate0 = 5.0
         self.__errorRotate90 = 85.0
-        self.__errorAng = 1.2
+        self.__errorAng = 1.0
 
         self.__qrang = None
 

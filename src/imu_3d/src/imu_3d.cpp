@@ -116,7 +116,9 @@ int BW_COUNTER = 0;     //First-order
 //a =
 
 //    1.0000   -1.5610    0.6414
-
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 //Set high pass parameter
 void setHP()
 {
@@ -376,13 +378,17 @@ int main(int argc,char **argv)
     ros::Publisher imu_pub = n.advertise<std_msgs::Float64>("imu_data", 1000);
     ros::Subscriber speed_sub = n.subscribe("/FIRA/R1/Strategy/PathPlan/RobotSpeed",100,speed_stationary);
 
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(30);
 
     struct InputLoopState inputLoop;
     struct freespace_MotionEngineOutput meOut;
     struct Vec3f eulerAngles;
     struct MultiAxisSensor accel;
     struct MultiAxisSensor sensor;
+    struct MultiAxisSensor sensor_2;
+    struct MultiAxisSensor sensor_3;
+    struct MultiAxisSensor sensor_4;
+    struct MultiAxisSensor sensor_5;
     struct MultiAxisSensor angularVel;
     int rc;
 
@@ -413,9 +419,55 @@ int main(int argc,char **argv)
             int i;
             // Run game logic.
             getEulerAnglesFromMotion(&meOut, &eulerAngles);
-            freespace_util_getCompassHeading(&meOut, &sensor);
+            freespace_util_getCompassHeading(&meOut, &sensor_2);
             freespace_util_getAccNoGravity(&meOut, &accel);
             freespace_util_getAngularVelocity(&meOut, &angularVel);
+            freespace_util_getAngularVelocity(&meOut, &sensor_3);
+            freespace_util_getInclination(&meOut, &sensor_4);
+            freespace_util_getMagnetometer(&meOut, &sensor_5);
+
+            freespace_util_getAngPos(&meOut, &sensor);
+            // double angle_yaw = RADIANS_TO_DEGREES(atan2(2 * (sensor.x * sensor.y) - (sensor.w * sensor.z), pow(sensor.x, 2) + pow(sensor.y, 2) - pow(sensor.z, 2) + pow(sensor.w, 2)));
+            double angle_yaw = RADIANS_TO_DEGREES(atan2(2 * (sensor.x * sensor.y) + (sensor.w * sensor.z), 1 - 2 * (pow(sensor.x, 2.0) + pow(sensor.y, 2.0))));
+            double TEST = sensor.w*sensor.y - sensor.x*sensor.z;
+            
+            if(TEST < -90 || TEST > 90){
+                int sign = sgn(TEST);
+                angle_yaw = - 2 * sign * (double)atan2(sensor.x, sensor.w);
+            }else{
+                angle_yaw = atan2(2 * (sensor.x*sensor.y+sensor.w*sensor.z), pow(sensor.w, 2) + pow(sensor.x, 2) - pow(sensor.y, 2) - pow(sensor.z, 2));
+            }
+            angle_yaw = RADIANS_TO_DEGREES(angle_yaw);
+            angle_yaw = angle_yaw<0?angle_yaw+360:angle_yaw;
+            static double begin_yaw = angle_yaw;
+            double out_yaw = (360-angle_yaw+begin_yaw);
+            out_yaw = out_yaw>360?out_yaw-360:out_yaw;
+
+            static double liclination_begin = sensor_4.z;
+            static double compass_begin = sensor_2.x;
+            double angle_luclination = sensor_4.z - liclination_begin;
+            printf("angle liclination:%lf\n", angle_luclination);
+            printf("angle compass :%lf\n", sensor_2.x - compass_begin);
+            printf("magetometer_x:%lf\n", sensor_5.x);
+            printf("magetometer_y:%lf\n", sensor_5.y);
+            printf("magetometer_z:%lf\n", sensor_5.z);
+            //static double ang_by_vec = 0;
+            //if(fabs(sensor_3.z) > 0.02){
+                //ang_by_vec += (sensor_3.z/30)*10;
+                //// printf("8skdopasd\n\n");
+                //printf("sensor.x:%lf\n", sensor_3.z);
+            //}
+            //// printf("sensor.x:%lf\n", fabs(sensor_3.z));
+            //printf("ang_by_vec:%lf\n", ang_by_vec);
+
+            // printf("yaw: %lf\n\n", out_yaw);
+            // static double sensor_2_begin = sensor_2.x;
+            // double out_yaw_2 = (360-sensor_2.x+sensor_2_begin);
+            // out_yaw_2 = out_yaw_2>360?out_yaw_2-360:out_yaw_2;
+            // printf("sensor.x: %lf\n", out_yaw_2); 
+            // printf("yaw: %lf\n", angle_yaw);
+
+            
             //freespace_util_getAcceleration(&meOut, &accel);
 
             //double gaga_tmp = sqrt(angularVel.z*angularVel.z);
@@ -473,7 +525,8 @@ int main(int argc,char **argv)
             double t;
             double last_time;
             double delta_t = 0;
-            degree = 360+sensor.x-direct_tmp;
+    
+            degree = 360+angle_yaw-direct_tmp;
             if(degree>=360)
                 degree = degree - 360;
             //printf("degree:%f\n",degree);
@@ -484,7 +537,7 @@ int main(int argc,char **argv)
             if(flag)
             {
                 delta_t = 0;
-                direct_tmp = sensor.x;
+                direct_tmp = angle_yaw;
                 flag = false;
             }else{
                 delta_t = t - last_time;
@@ -532,6 +585,11 @@ int main(int argc,char **argv)
                 calc_shift(acc,delta_t);
             }
             vel_z = vel;
+            std_msgs::Float64 imu_angle;
+            double inv_degree = 360-out_yaw;
+            // imu_angle.data = inv_degree>180?inv_degree-360:inv_degree;
+            imu_angle.data = angle_luclination; 
+            imu_pub.publish(imu_angle);
         }
 
         //ROS publish msg
@@ -544,10 +602,6 @@ int main(int argc,char **argv)
 
         inertia.yaw = DEGREES_TO_RADIANS(degree);
 
-        std_msgs::Float64 imu_angle;
-        double inv_degree = 360-degree;
-        imu_angle.data = inv_degree>180?inv_degree-360:inv_degree;
-        imu_pub.publish(imu_angle);
 
         // imu_pub.publish(inertia);
 
@@ -598,6 +652,7 @@ static void getEulerAnglesFromMotion(const struct freespace_MotionEngineOutput* 
 
     // Get the angular position data from the MEOut packet
     freespace_util_getAngPos(meOut, &sensor);
+    // freespace_util_getAngularVelocity(meOut, &sensor);
 
     // Copy the data over to because both the util API and quaternion.h each have their own structs
     q.w = sensor.w;
@@ -612,6 +667,7 @@ static void getEulerAnglesFromMotion(const struct freespace_MotionEngineOutput* 
 
     // Convert quaternion to Euler angles
     q_toEulerAngles(eulerAngles, &q);
+    // printf("\n\n\n\n1:%lf\n2:%lf\n3:%lf\n\n\n\n", eulerAngles->x, eulerAngles->y, eulerAngles->z*);
 }
 
 // ============================================================================
