@@ -53,6 +53,8 @@ class NodeHandle(object):
 
         self.__qrang = None
 
+        self.__stopPoint = 999 
+
         self.__loadParam = False
 
         self.pub_cmdvel = rospy.Publisher('motion/cmd_vel',Twist, queue_size = 1)
@@ -64,6 +66,7 @@ class NodeHandle(object):
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
         # rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
         rospy.Subscriber("/imu_data",Float64,self.Sub_QRAngle)
+        rospy.Subscriber("/rfid",Float64,self.Sub_RFID)
     
     def Sub_ScanInfo(self,msg):
         self.__dis = msg.dis
@@ -76,6 +79,8 @@ class NodeHandle(object):
         self.__loadParam = True
     def Sub_QRAngle(self,msg):
         self.__qrang = msg.data
+    def Sub_RFID(self,msg):
+        self.__stopPoint = msg.data
         
 
     
@@ -186,6 +191,14 @@ class NodeHandle(object):
     @qrang.setter
     def qrang(self, value):
         self.__qrang = value
+    
+    @property
+    def stopPoint(self):
+        return self.__stopPoint
+
+    @stopPoint.setter
+    def stopPoint(self, value):
+        self.__stopPoint = value
     
     @property
     def loadParam(self):

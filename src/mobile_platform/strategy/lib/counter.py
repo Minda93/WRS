@@ -22,6 +22,9 @@ class TimeCounter(object):
         else:
             self.__begin = rospy.get_rostime()
     
+    def Set_Time(self,time):
+        self.__time = time
+    
     def Process(self):
         t_ = rospy.get_rostime()
 

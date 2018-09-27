@@ -31,6 +31,7 @@ INIT = 10
 # FLAG 
 CONTROL = 'PIDCONTROL'
 # CONTROL = 'FUZZYCONTROL'
+IMU_FLAG = True
 
 '''
     HOME -> FIRST
@@ -38,7 +39,7 @@ CONTROL = 'PIDCONTROL'
     FIRST -> SECOND 
         NEXT -> ROTATE_0 -> CROSS -> MOBILE -> CORRECTION_0 -> ROTATE_90 -> CORRECTION_90 -> PLATFORM
     POINT -> HOME
-        ???
+        HOME -> ROTATE -> CROSS_FIRST -> MOBILE -> PLATFORM
 '''
 
 class Strategy(object):
@@ -144,7 +145,7 @@ class Strategy(object):
             count = self._param.scanState.count(1)
             if(count):
                 scanNum = len(self._param.scanState)
-                if(count <= math.ceil((scanNum)*(1./3))):
+                if(count <= math.ceil((scanNum)*(1./3)) and self._param.stopPoint == 999):
                     self.state = 0
                     # Method 3
                     #if(CONTROL == 'PIDCONTROL'):
@@ -190,16 +191,18 @@ class Strategy(object):
                     self.prev_dis = self._param.dis
                     self.prev_ang = self._param.ang
                     self.prev_vel = [x,y,yaw]
-                else:
+                elif(self._param.stopPoint):
                     print('STOP')
                     self.state = 1
                     self.Robot_Stop()
 
                     if(self.homeFlag == 1):
-                        self._param.behavior = CROSS
+                        self._param.behavior = HOME
                     else:
                         self._param.behavior = CORRECTION
+                        self.homeTimes += 1
 
+                self._param.stopPoint = 999
                 self.pre_state = self.state
             else:
                 print('Offset track !!!!!!')
@@ -231,12 +234,12 @@ class Strategy(object):
                 if(abs(RPang) > self._param.errorAng):
                     if(RPang > 0):
                         x = 0
-                        # y = 0
+                        y = 0
                         # yaw = self._param.velYaw
                         yaw = self._param.rotateYaw
                     else:
                         x = 0
-                        # y = 0
+                        y = 0
                         # yaw = -self._param.velYaw
                         yaw = -self._param.rotateYaw
 
@@ -405,6 +408,24 @@ class Strategy(object):
         self.homeTimes = 0
         self.Robot_Stop()
         self._param.behavior = MOBILE_ROBOT
+
+    def Home_Strategy(self):
+        if(self.homeFlag == 0):
+            self.homeFlag = 1
+            self.Robot_Stop()
+            self._param.behavior = ROTATE
+            self.rotateAng = 0
+            self.homeTimes -= 1
+        else:
+            if(self.homeTimes == 0):
+                print('home')
+                self.Robot_Stop()
+                self._param.behavior = PLATFORM
+            else:
+                if(self.homeTimes == self._param.stopPoint):
+                    self.homeTimes -= 1
+                    self._param.behavior = CROSS
+
             
     def Deg2Rad(self,deg):
         return deg*math.pi/180
