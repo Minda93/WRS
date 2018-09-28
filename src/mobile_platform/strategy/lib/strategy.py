@@ -422,7 +422,7 @@ class Strategy(object):
                 self.Robot_Stop()
                 self._param.behavior = PLATFORM
             else:
-                if(self.homeTimes == self._param.stopPoint):
+                if(self.homeTimes == int(self._param.stopPoint)):
                     self.homeTimes -= 1
                     self._param.behavior = CROSS
 

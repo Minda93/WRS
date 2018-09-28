@@ -7,7 +7,7 @@ import subprocess
 
 # rostopic msg
 from mobile_platform.msg import scaninfo
-from std_msgs.msg import Int32,Float32,Float64,Bool
+from std_msgs.msg import Int32,Float32,Float64,Bool,String
 from geometry_msgs.msg import Twist
 
 # define behavior 
@@ -66,7 +66,7 @@ class NodeHandle(object):
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
         # rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
         rospy.Subscriber("/imu_data",Float64,self.Sub_QRAngle)
-        rospy.Subscriber("/rfid",Float64,self.Sub_RFID)
+        rospy.Subscriber("/rfid",String,self.Sub_RFID)
     
     def Sub_ScanInfo(self,msg):
         self.__dis = msg.dis
