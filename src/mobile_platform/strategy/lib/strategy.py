@@ -67,7 +67,7 @@ class Strategy(object):
         # self.lastError = 0
         
         ''' rotate  '''
-        self.rotateAng = 0
+        self.rotateAng = self._param.errorRotate0
 
         ''' go_point '''
         self.timer = TimeCounter(time = 0.8)
@@ -146,7 +146,7 @@ class Strategy(object):
             count = self._param.scanState.count(1)
             if(count):
                 scanNum = len(self._param.scanState)
-                if(count <= math.ceil((scanNum)*(1./3)) and self._param.stopPoint == 999):
+                if(count <= math.ceil((scanNum)*(2./3)) and self._param.stopPoint == 999):
                     self.state = 0
                     # Method 3
                     #if(CONTROL == 'PIDCONTROL'):
@@ -256,14 +256,18 @@ class Strategy(object):
                     self.Robot_Stop()
                     self.Robot_Stop()
                     self.Robot_Stop()
-                    if(self.rotateAng == 0):
+
+                    print('CORRECTION',self.rotateAng,self._param.errorRotate0)
+                    if(self.rotateAng == self._param.errorRotate0):
+                        print('fuck 1')
                         self._param.behavior = ROTATE
                         self.rotateAng = self._param.errorRotate90
                     else:
+                        print('fuck 2')
                         self._param.behavior = PLATFORM
                         self.rotateAng = self._param.errorRotate0
                         self.initPID = 1
-                    print('CORRECTION')
+                    
                 self.not_find = 0
             else:
                 print('CORRECTION not find')
@@ -272,7 +276,7 @@ class Strategy(object):
                     self.Robot_Stop()
                 else:
                     self.not_find = 0
-                    if(self.rotateAng == 0):
+                    if(self.rotateAng == self._param.errorRotate0):
                         self._param.behavior = ROTATE
                         self.rotateAng = self._param.errorRotate90
                     else:
@@ -299,7 +303,7 @@ class Strategy(object):
         print('NEXT_POINT')
         self.Robot_Stop()
         self._param.behavior = ROTATE
-        self.rotateAng = 0
+        self.rotateAng = self._param.errorRotate0
         
             
     def Rotate_Strategy(self):
@@ -363,7 +367,7 @@ class Strategy(object):
         if(state):
             self.Robot_Stop()
             self._param.behavior = ROTATE
-            self.rotateAng = 0
+            self.rotateAng = self._param.errorRotate0
         else:
             x = -self._param.minVel
             y = 0
@@ -377,7 +381,7 @@ class Strategy(object):
         if(state):
             self.Robot_Stop()
             self._param.behavior = MOBILE_ROBOT
-            self.rotateAng = 0
+            self.rotateAng = self._param.errorRotate0
         elif(state == 0 and self.homeFlag == 0):
             x = self._param.minVel
             y = 0
@@ -415,7 +419,7 @@ class Strategy(object):
         #     print('fuck Cross')
     
     def Init_Strategy(self):
-        self.rotateAng = 0
+        self.rotateAng = self._param.errorRotate0
         self.homeFlag = 0
         self.homeTimes = 0
         self.Robot_Stop()
@@ -428,7 +432,7 @@ class Strategy(object):
             self.homeFlag = 1
             self.Robot_Stop()
             self._param.behavior = ROTATE
-            self.rotateAng = 0
+            self.rotateAng = self._param.errorRotate0
             self.homeTimes -= 1
         else:
             if(self.homeTimes == 0 and self._param.stopPoint == '0'):
