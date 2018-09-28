@@ -100,6 +100,7 @@ class Strategy(object):
         elif(self._param.behavior == HOME):
             if(self._param.loadParam):
                 self.Change_Behavior()
+            self.Home_Strategy()
             print('HOME')
 
         elif(self._param.behavior == MANUAL):
@@ -185,19 +186,25 @@ class Strategy(object):
                             yaw = self.controlYaw.Process(self._param.ang,self._param.velYaw)
                         else:
                             yaw = 0
+                    if(self.homeFlag == 0):
+                        self.Robot_Vel([x,y,yaw])
+                        print(x,y,yaw)
+                    else:
+                        self.Robot_Vel([-x,y,yaw])
+                        print(-x,y,yaw)
 
-                    self.Robot_Vel([x,y,yaw])
-                    print(x,y,yaw)
-                    self.prev_dis = self._param.dis
-                    self.prev_ang = self._param.ang
-                    self.prev_vel = [x,y,yaw]
-                elif(self._param.stopPoint):
+                    # self.prev_dis = self._param.dis
+                    # self.prev_ang = self._param.ang
+                    # self.prev_vel = [x,y,yaw]
+                elif(self._param.stopPoint != 999):
                     print('STOP')
                     self.state = 1
                     self.Robot_Stop()
 
                     if(self.homeFlag == 1):
                         self._param.behavior = HOME
+                    elif(self.homeTimes == int(self._param.stopPoint)):
+                        self._param.behavior = CROSS
                     else:
                         self._param.behavior = CORRECTION
                         self.homeTimes += 1
@@ -371,8 +378,13 @@ class Strategy(object):
             self.Robot_Stop()
             self._param.behavior = MOBILE_ROBOT
             self.rotateAng = 0
-        else:
+        elif(state == 0 and self.homeFlag == 0):
             x = self._param.minVel
+            y = 0
+            yaw = 0
+            self.Robot_Vel([x,y,yaw])
+        elif(state == 0 and self.homeFlag == 1):
+            x = -self._param.minVel
             y = 0
             yaw = 0
             self.Robot_Vel([x,y,yaw])
@@ -410,14 +422,16 @@ class Strategy(object):
         self._param.behavior = MOBILE_ROBOT
 
     def Home_Strategy(self):
+        print('HOME times',self.homeTimes,'HOME stop',self._param.stopPoint)
         if(self.homeFlag == 0):
+            print('HOME',1)
             self.homeFlag = 1
             self.Robot_Stop()
             self._param.behavior = ROTATE
             self.rotateAng = 0
             self.homeTimes -= 1
         else:
-            if(self.homeTimes == 0):
+            if(self.homeTimes == 0 and self._param.stopPoint == '0'):
                 print('home')
                 self.Robot_Stop()
                 self._param.behavior = PLATFORM
@@ -425,6 +439,8 @@ class Strategy(object):
                 if(self.homeTimes == int(self._param.stopPoint)):
                     self.homeTimes -= 1
                     self._param.behavior = CROSS
+                else:
+                    self._param.behavior = MOBILE_ROBOT
 
             
     def Deg2Rad(self,deg):
