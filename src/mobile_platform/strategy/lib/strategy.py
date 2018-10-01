@@ -70,7 +70,7 @@ class Strategy(object):
         self.rotateAng = self._param.errorRotate0
 
         ''' go_point '''
-        self.timer = TimeCounter(time = 0.8)
+        self.timer = TimeCounter(time = 0.3)
 
         ''' home '''
         self.homeFlag = 0
