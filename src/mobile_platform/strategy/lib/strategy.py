@@ -259,11 +259,9 @@ class Strategy(object):
 
                     print('CORRECTION',self.rotateAng,self._param.errorRotate0)
                     if(self.rotateAng == self._param.errorRotate0):
-                        print('fuck 1')
                         self._param.behavior = ROTATE
                         self.rotateAng = self._param.errorRotate90
                     else:
-                        print('fuck 2')
                         self._param.behavior = PLATFORM
                         self.rotateAng = self._param.errorRotate0
                         self.initPID = 1
