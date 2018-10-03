@@ -517,21 +517,21 @@ class Strategy(object):
     def Dual_Arm_Start(self):
         start = Bool()
         start.data = True
-        self._param.pub_cmdvel.publish(start)
+        self._param.pub_dualArm.publish(start)
 
     def Scan_Camera_Start(self):
         start = Bool()
         start.data = True
-        self._param.pub_cmdvel.publish(start)
+        self._param.pub_startCamera.publish(start)
 
     def Scan_Camera_Stop(self):
         start = Bool()
         start.data = False
-        self._param.pub_cmdvel.publish(start)
+        self._param.pub_startCamera.publish(start)
     
     def Reset_IMU(self):
         reset = Bool()
         reset.data = True
-        self._param.pub_cmdvel.publish(reset)
+        self._param.pub_resetImu.publish(reset)
     
 
