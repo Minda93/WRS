@@ -33,8 +33,9 @@ def main():
         # if(cap.isOpened()):
         #     ret, frame = cap.read()
         #     image.Process(frame)
-        image.Process()
-        rate.sleep()
+        if(image._param.start):
+            image.Process()
+            rate.sleep()
     try:
         rospy.spin()
     except KeyboardInterrupt:

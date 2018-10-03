@@ -57,7 +57,7 @@ class ScanLine(object):
         if(len(self._multiPos) != 0):
             self.Calculate_Angle()
 
-        if(IMGSHOW_FLAG == True):
+        if(IMGSHOW_FLAG == True and self._param.imgShow):
             fm = self.RepackImages()
             cv2.imshow("Vision Race", fm)
     
@@ -185,7 +185,7 @@ class DecideGrid(object):
         self.Slice_Scan()
         self.Detect_Scan()
 
-        if(IMGSHOW_FLAG == True):
+        if(IMGSHOW_FLAG == True and self._param.imgShow):
             cv2.imshow("DecideGrid",self.thresh)
 
     def Draw_Scan(self,img):
@@ -255,10 +255,12 @@ class ImageProcessing(object):
 
                 self.Pub_ScanInfo()
 
-                if(IMGSHOW_FLAG == True):
+                if(IMGSHOW_FLAG == True and self._param.imgShow):
                     # cv2.imshow('src',src)
                     # cv2.imshow('dst',img)
                     cv2.waitKey(1)
+                else:
+                    cv2.destroyAllWindows()
 
     def Pub_ScanInfo(self):
         # if(self.decideGrid.scanState):

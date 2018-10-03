@@ -17,18 +17,24 @@ FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'test1.yaml'
 
 class NodeHandle(object):
     '''
+        image process
+            img: 影像
+            start: 影像執行
+            imgShow: 顯示影像
+            loadParam: check new parameter
         decide grid parameter
             middleY: 垂直高度 (0~影像rows)
             range: 一半寬度
             threshold: 二值化權重
             weight: 數位感測權重
             scanNum: 數位感測數量
-
         direction error parameter
             sliceNum: 圖像分割數 
     '''
     def __init__(self):
         self.__img = None
+        self.__start = 1
+        self.__imgShow = 1
 
         self.__middleY = 240
         self.__range = 30
@@ -49,6 +55,8 @@ class NodeHandle(object):
         rospy.Subscriber("usb_cam/image_raw",Image,self.Sub_Img)
 
         rospy.Subscriber("scan_black/scanSave",Bool,self.Save_Param)
+        rospy.Subscriber("scan_black/scanStart",Bool,self.Sub_Start)
+        rospy.Subscriber("scan_black/scanImgShow",Bool,self.Sub_Show)
 
         rospy.Subscriber("scan_black/middleY",Int32,self.Sub_MiddleY)
         rospy.Subscriber("scan_black/range",Int32,self.Sub_Range)
@@ -59,6 +67,11 @@ class NodeHandle(object):
 
     def Sub_Img(self,msg):
         self.__img = CvBridge().imgmsg_to_cv2(msg, "bgr8")
+    def Sub_Start(self,msg):
+        self.__start = msg.data
+    def Sub_Show(self,msg):
+        self.__imgShow = msg.data
+
     def Sub_MiddleY(self,msg):
         self.__middleY = msg.data
         self.__loadParam = True
@@ -118,6 +131,23 @@ class NodeHandle(object):
         self.__img = value
 
     @property
+    def start(self):
+        return self.__start
+    @start.setter
+    def start(self, value):
+        self.__start = value
+
+    @property
+    def imgShow(self):
+        return self.__imgShow
+    @imgShow.setter
+    def imgShow(self, value):
+        self.__imgShow = value
+
+    '''
+        parameter  
+    '''
+    @property
     def middleY(self):
         return self.__middleY
 
@@ -164,7 +194,10 @@ class NodeHandle(object):
     @sliceNum.setter
     def sliceNum(self, value):
         self.__sliceNum = value
-    
+
+    '''  
+        check load new parameter
+    '''     
     @property
     def loadParam(self):
         return self.__loadParam

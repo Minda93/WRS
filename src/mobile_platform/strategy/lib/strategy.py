@@ -13,6 +13,7 @@ from lib.counter import TimeCounter
 
 # rostopic msg
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Bool
 
 
 # define behavior 
@@ -43,6 +44,27 @@ IMU_FLAG = True
 '''
 
 class Strategy(object):
+    '''
+        Offset track(目前停止)
+            prev_dis:
+            prev_ang:
+            prev_vel:
+        CONTROL
+            initPID: 初始化不要使PID不斷累加
+        QRCODE(目前沒用到)
+            state:
+            pre_state:
+            not_find: 
+        ROTATE
+            rotateAng: 目標角度
+        CROSS
+            timer: 計數器
+        HOME
+            homeFlag
+                1: go home
+                0: 前進
+            homeTimes: 記錄走到的停止點
+    '''
     def __init__(self):
         self._param = NodeHandle()
         if(CONTROL == 'PIDCONTROL'):
@@ -52,14 +74,16 @@ class Strategy(object):
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         
-        self.state = 0
-        self.pre_state = 0
         self.prev_dis = 0
         self.prev_ang = 0
         self.prev_vel = []
 
         self.initPID = 0
+
+        self.state = 0
+        self.pre_state = 0
         self.not_find = 0
+
         # self._kp = 6
         # self._ki = 0.1
         # self._kd = 4.0
@@ -69,8 +93,8 @@ class Strategy(object):
         ''' rotate  '''
         self.rotateAng = self._param.errorRotate0
 
-        ''' go_point '''
-        self.timer = TimeCounter(time = 0.3)
+        ''' cross '''
+        self.timer = TimeCounter(time = self._param.crossTime)
 
         ''' home '''
         self.homeFlag = 0
@@ -179,10 +203,10 @@ class Strategy(object):
                     y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
                     x = (self._param.minVel - abs(y))*math.cos(math.radians(self._param.ang)) - y*math.sin(math.radians(self._param.ang))
                     
-                    if(abs(self._param.dis) > 1000):
+                    if(abs(self._param.dis) > self._param.errorMoibledis):
                         yaw = 0
                     else:       
-                        if(abs(self._param.ang) > 3.0):
+                        if(abs(self._param.ang) > self._param.errorMoibleAng):
                             yaw = self.controlYaw.Process(self._param.ang,self._param.velYaw)
                         else:
                             yaw = 0
@@ -235,7 +259,7 @@ class Strategy(object):
 
     def Correction_Strategy(self):
         y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
-        if(self._param.dis < 600):
+        if(self._param.dis < self._param.errorCorrectionDis):
             if(self._param.qrang is not None and self._param.qrang != 999):
                 RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
                 if(abs(RPang) > self._param.errorAng):
@@ -296,6 +320,8 @@ class Strategy(object):
             self.controlY.Init()
             self.initPID = 0
         self.Robot_Stop()
+        if(self.homeFlag == 0):
+            self.Dual_Arm_Start()
     
     def Next_Point_Strategy(self):
         print('NEXT_POINT')
@@ -308,7 +334,7 @@ class Strategy(object):
         # yaw = self.controlYaw(self._param.qrang,self._param.velYaw)
         if(self._param.qrang is not None and self._param.qrang != 999):
             RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
-            if(abs(RPang) > self._param.errorAng and RPang > 20):
+            if(abs(RPang) > self._param.errorAng and RPang > self._param.rotateSlowAng):
                 if(RPang > 0):
                     x = 0
                     y = 0
@@ -321,7 +347,7 @@ class Strategy(object):
                     yaw = -self._param.rotateYaw
                 self.Robot_Vel([x,y,yaw])
                 print('ROTATE','angle',self._param.qrang)
-            elif((abs(RPang) > self._param.errorAng and RPang <= 20)):
+            elif((abs(RPang) > self._param.errorAng and RPang <= self._param.rotateSlowAng)):
                 if(RPang > 0):
                     x = 0
                     y = 0
@@ -435,6 +461,7 @@ class Strategy(object):
         self.homeTimes = 0
         self.Robot_Stop()
         self._param.behavior = MOBILE_ROBOT
+        # self.Reset_IMU()
 
     def Home_Strategy(self):
         print('HOME times',self.homeTimes,'HOME stop',self._param.stopPoint)
@@ -486,5 +513,25 @@ class Strategy(object):
         self.Robot_Stop()
         self.Robot_Stop()
         self._param.loadParam = False
+    
+    def Dual_Arm_Start(self):
+        start = Bool()
+        start.data = True
+        self._param.pub_cmdvel.publish(start)
+
+    def Scan_Camera_Start(self):
+        start = Bool()
+        start.data = True
+        self._param.pub_cmdvel.publish(start)
+
+    def Scan_Camera_Stop(self):
+        start = Bool()
+        start.data = False
+        self._param.pub_cmdvel.publish(start)
+    
+    def Reset_IMU(self):
+        reset = Bool()
+        reset.data = True
+        self._param.pub_cmdvel.publish(reset)
     
 
