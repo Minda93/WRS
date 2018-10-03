@@ -310,7 +310,7 @@ class Strategy(object):
         # yaw = self.controlYaw(self._param.qrang,self._param.velYaw)
         if(self._param.qrang is not None and self._param.qrang != 999):
             RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
-            if(abs(RPang) > self._param.errorAng):
+            if(abs(RPang) > self._param.errorAng and RPang > 20):
                 if(RPang > 0):
                     x = 0
                     y = 0
@@ -321,6 +321,19 @@ class Strategy(object):
                     y = 0
                     # yaw = -self._param.velYaw
                     yaw = -self._param.rotateYaw
+                self.Robot_Vel([x,y,yaw])
+                print('ROTATE','angle',self._param.qrang)
+            elif((abs(RPang) > self._param.errorAng and RPang <= 20)):
+                if(RPang > 0):
+                    x = 0
+                    y = 0
+                    # yaw = self._param.velYaw
+                    yaw = self._param.rotateYaw*0.8
+                else:
+                    x = 0
+                    y = 0
+                    # yaw = -self._param.velYaw
+                    yaw = -self._param.rotateYaw*0.8
                 self.Robot_Vel([x,y,yaw])
                 print('ROTATE','angle',self._param.qrang)
             else:
