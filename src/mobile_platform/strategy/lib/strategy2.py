@@ -28,6 +28,8 @@ GO_POINT = 7
 RETURN_POINT = 8
 CROSS = 9
 INIT = 10
+DELIVERY = 11
+ORDER = 12
 
 # FLAG 
 CONTROL = 'PIDCONTROL'
@@ -36,11 +38,15 @@ IMU_FLAG = True
 
 '''
     HOME -> FIRST
-        INIT -> MOBILE -> CORRECTION_0 -> ROTATE_90 -> CORRECTION_90 -> PLATFORM
+        INIT -> MOBILE -> PLATFORM -> pub voice
+    Delivery
+        Delivery -> ROTATE_0 -> PLATFORM
+    ORDER
+        ORDER -> ROTATE_90 -> PLATFORM
     FIRST -> SECOND 
-        NEXT -> ROTATE_0 -> CROSS -> MOBILE -> CORRECTION_0 -> ROTATE_90 -> CORRECTION_90 -> PLATFORM
+        NEXT -> ROTATE_0 -> CROSS -> MOBILE -> PLATFORM
     POINT -> HOME
-        HOME -> ROTATE -> CROSS_FIRST -> MOBILE -> PLATFORM
+        HOME -> ROTATE_0 -> CROSS_FIRST -> MOBILE -> PLATFORM
 '''
 
 class Strategy(object):
@@ -57,6 +63,9 @@ class Strategy(object):
             not_find: 
         ROTATE
             rotateAng: 目標角度
+            rotateFlag: 
+                1: 切換 platform 
+                0: 切換 cross
         CROSS
             timer: 計數器
         HOME
@@ -92,6 +101,7 @@ class Strategy(object):
         
         ''' rotate  '''
         self.rotateAng = self._param.errorRotate0
+        self.rotateFlag = 0
 
         ''' cross '''
         self.timer = TimeCounter(time = self._param.crossTime)
@@ -161,6 +171,14 @@ class Strategy(object):
                 self.Change_Behavior()
             self.Init_Strategy()
             print('Init')
+        elif(self._param.behavior == DELIVERY):
+            if(self._param.loadParam):
+                self.Change_Behavior()
+            self.Delivery_Strategy()
+        elif(self._param.behavior == ORDER):
+            if(self._param.loadParam):
+                self.Change_Behavior()
+            self.Order_Strategy()
         else:
             print("Don't have Behavior")
             self.Robot_Stop()
@@ -171,34 +189,7 @@ class Strategy(object):
             if(count):
                 scanNum = len(self._param.scanState)
                 if(count <= math.ceil((scanNum)*(2./3)) and self._param.stopPoint == 999):
-                    self.state = 0
-                    # Method 3
-                    #if(CONTROL == 'PIDCONTROL'):
-                    #    x,y,yaw = self.control.Process(self._param.dis,self._param.ang,self._param.maxVel,self._param.minVel,self._param.velYaw)
-                    #elif(CONTROL == 'FUZZYCONTROL'):
-                    #    x,y,yaw = self.control.Process(self._param.dis,self._param.ang)
-                    # yaw = 0
-                    #self.Robot_Vel([y,-x,yaw])
-                    #print(y,-x,yaw)
-
-                    # Method 4
-                    # x,y,yaw = self.control.Process(self._param.dis,self._param.ang,self._param.maxVel,self._param.minVel,self._param.velYaw)
-                    # if(abs(self._param.ang) > 10.0):
-                    #     if(self._param.ang > 0):
-                    #         x = -(self._param.minVel*math.cos(math.radians(self._param.ang)))*0.15
-                    #         y = -(self._param.minVel*math.sin(math.radians(self._param.ang)))*0.15
-                    #         # yaw = self._param.velYaw
-                    #         yaw = (self._param.velYaw+abs(yaw))
-                    #     else:
-                    #         x = -(self._param.minVel*math.cos(math.radians(self._param.ang)))*0.15
-                    #         y = (self._param.minVel*math.sin(math.radians(self._param.ang)))*0.15
-                    #         # yaw = -self._param.velYaw
-                    #         yaw = -(self._param.velYaw+abs(yaw))
-                    # else:
-                    #     x,y,_ = self.control.Process(self._param.dis,self._param.ang,self._param.maxVel,self._param.minVel,self._param.velYaw)
-                    #     # x,y,_ = self.control.Process(self._param.dis,self._param.ang)
-                    #     yaw = 0
-                        
+                    self.state = 0    
                     ''' Method 5 '''
                     y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
                     x = (self._param.minVel - abs(y))*math.cos(math.radians(self._param.ang)) - y*math.sin(math.radians(self._param.ang))
@@ -230,7 +221,11 @@ class Strategy(object):
                     elif(self.homeTimes == int(self._param.stopPoint)):
                         self._param.behavior = CROSS
                     else:
-                        self._param.behavior = CORRECTION
+                        self._param.behavior = PLATFORM
+                        if(self._param.stopPoint == '1'):
+                            self.Voice_Start()
+                        elif(self._param.stopPoint == '2'):
+                            self.Dual_Arm_Start()
                         self.homeTimes += 1
 
                 self._param.stopPoint = 999
@@ -320,13 +315,14 @@ class Strategy(object):
             self.controlY.Init()
             self.initPID = 0
         self.Robot_Stop()
-        if(self.homeFlag == 0):
+        if(self.homeFlag == 0 and self.rotateFlag == 1):
             self.Dual_Arm_Start()
     
     def Next_Point_Strategy(self):
         print('NEXT_POINT')
         self.Robot_Stop()
         self._param.behavior = ROTATE
+        self.rotateFlag = 0
         self.rotateAng = self._param.errorRotate0
         
             
@@ -364,9 +360,9 @@ class Strategy(object):
                 self.Robot_Stop()
                 self.Robot_Stop()
                 self.Robot_Stop()
-                if(self.rotateAng == self._param.errorRotate90):
-                    self._param.behavior = CORRECTION
-                    print('ROTATE COREECTION')
+                if(self.rotateFlag == 1):
+                    self._param.behavior = PLATFORM
+                    print('ROTATE PLATFORM')
                 else:
                     self._param.behavior = CROSS
                     print('ROTATE CROSS')
@@ -457,6 +453,7 @@ class Strategy(object):
     
     def Init_Strategy(self):
         self.rotateAng = self._param.errorRotate0
+        self.rotateFlag = 0
         self.homeFlag = 0
         self.homeTimes = 0
         self.Robot_Stop()
@@ -483,6 +480,20 @@ class Strategy(object):
                     self._param.behavior = CROSS
                 else:
                     self._param.behavior = MOBILE_ROBOT
+    
+    def Delivery_Strategy(self):
+        print('Delivery')
+        self.Robot_Stop()
+        self.rotateAng = self._param.errorRotate0
+        self.rotateFlag = 1
+        self._param.behavior = ROTATE
+    
+    def Order_Strategy(self):
+        print('Order')
+        self.Robot_Stop()
+        self.rotateAng = self._param.errorRotate90
+        self.rotateFlag = 1
+        self._param.behavior = ROTATE
 
             
     def Deg2Rad(self,deg):
@@ -533,5 +544,10 @@ class Strategy(object):
         reset = Bool()
         reset.data = True
         self._param.pub_resetImu.publish(reset)
+    
+    def Voice_Start(self):
+        start = Bool()
+        start.data = True
+        self._param.pub_voice.publish(start)
     
 

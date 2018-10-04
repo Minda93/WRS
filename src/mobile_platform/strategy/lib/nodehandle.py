@@ -22,6 +22,8 @@ GO_POINT = 7
 RETURN_POINT = 8
 CROSS = 9
 INIT = 10
+AID = 11
+ORDER = 12
 
 # FILENAME 
 # FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage1_imu.yaml'
@@ -92,10 +94,11 @@ class NodeHandle(object):
         self.pub_cmdvel = rospy.Publisher('motion/cmd_vel',Twist, queue_size = 1)
         self.pub_behavior = rospy.Publisher('scan_black/strategy_behavior',Int32, queue_size = 1)
         self.pub_dualArm = rospy.Publisher('scan_black/dualarm_start',Bool, queue_size = 1)
+        self.pub_voice = rospy.Publisher('scan_black/voice_start',Bool, queue_size = 1)
         self.pub_startCamera = rospy.Publisher('scan_black/scanStart',Bool, queue_size = 1)
         self.pub_resetImu = rospy.Publisher('scan_black/resetImu',Bool, queue_size = 1)
 
-        rospy.Subscriber("scan_black/strategy_start",Int32,self.Sub_Start)
+        rospy.Subscriber("scan_black/strategy_start",Bool,self.Sub_Start)
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
         rospy.Subscriber("scan_black/strategy_save",Bool,self.Save_Param)
 
