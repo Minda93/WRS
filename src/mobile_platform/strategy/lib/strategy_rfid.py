@@ -194,7 +194,7 @@ class Strategy(object):
                     # self.prev_dis = self._param.dis
                     # self.prev_ang = self._param.ang
                     # self.prev_vel = [x,y,yaw]
-                elif(self._param.stopPoint != 999 or self._param.stopPoint != '91'):
+                elif(self._param.stopPoint != 999 and self._param.stopPoint != '91'):
                     print('STOP')
                     self.state = 1
                     self.Robot_Stop()
@@ -206,6 +206,7 @@ class Strategy(object):
                     else:
                         self._param.behavior = ROTATE
                         self.homeTimes += 1
+                        print("fuck!!!!!!!!!!!!!!! ", self.homeTimes)
 
                 self._param.stopPoint = 999
                 self.pre_state = self.state
@@ -306,29 +307,31 @@ class Strategy(object):
             
     def Rotate_Strategy(self):
         if(self.rotateAng == self._param.errorRotate90):
+            print('rotate 90')
             x = 0
             y = 0
             yaw = self._param.rotateYaw
             self.Robot_Vel([x,y,yaw])
             if(self._param.stopPoint == '90'):
                 self.Robot_Stop()
-            self._param.behavior = PLATFORM
-            if(self.rotateAng == self._param.errorRotate90):
-                self.rotateAng = self._param.errorRotate0
-            else:
-                self.rotateAng = self._param.errorRotate90
+                self._param.behavior = PLATFORM
+                if(self.rotateAng == self._param.errorRotate90):
+                    self.rotateAng = self._param.errorRotate0
+                else:
+                    self.rotateAng = self._param.errorRotate90
         elif(self.rotateAng == self._param.errorRotate0):
+            print('rotate 0')
             x = 0
             y = 0
             yaw = -self._param.rotateYaw
             self.Robot_Vel([x,y,yaw])
             if(self._param.stopPoint == '91' or self._param.stopPoint == '1' or self._param.stopPoint == '2'):
                 self.Robot_Stop()
-            self._param.behavior = MOBILE_ROBOT
-            if(self.rotateAng == self._param.errorRotate90):
-                self.rotateAng = self._param.errorRotate0
-            else:
-                self.rotateAng = self._param.errorRotate90
+                self._param.behavior = MOBILE_ROBOT
+                if(self.rotateAng == self._param.errorRotate90):
+                    self.rotateAng = self._param.errorRotate0
+                else:
+                    self.rotateAng = self._param.errorRotate90
             
     
     def Go_Point_Strategy(self):
@@ -401,7 +404,7 @@ class Strategy(object):
         #     print('fuck Cross')
     
     def Init_Strategy(self):
-        self.rotateAng = self._param.errorRotate0
+        self.rotateAng = self._param.errorRotate90
         self.homeFlag = 0
         self.homeTimes = 0
         self.Robot_Stop()
