@@ -5,7 +5,20 @@ import roslib
 roslib.load_manifest('mobile_platform')
 import rospy
 
-from lib.strategy import Strategy
+''' stage 1 '''
+''' imu '''
+# from lib.strategy import Strategy
+
+''' rfid '''
+from lib.strategy_rfid import Strategy
+
+''' stage 2 '''
+''' imu '''
+''' rfid '''
+
+''' stage 3 '''
+''' imu '''
+''' rfid '''
 
 '''
     input: scan_black/qrcode_angle (type:std_msgs/Float32)
