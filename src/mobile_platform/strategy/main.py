@@ -16,7 +16,7 @@ import rospy
 ''' imu '''
 from lib.strategy2 import Strategy
 ''' rfid '''
-
+# from lib.strategy2_rfid import Strategy
 ''' stage 3 '''
 ''' imu '''
 ''' rfid '''
