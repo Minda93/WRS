@@ -58,9 +58,24 @@ var topicScanRange = new RosTopic(ros, '/scan_black/range', '/std_msgs/Int32')
 var topicScanThreshold = new RosTopic(ros, '/scan_black/threshold', '/std_msgs/Int32')
 var topicScanWeight = new RosTopic(ros, '/scan_black/weight', '/std_msgs/Int32')
 var topicScanSave = new RosTopic(ros, '/scan_black/scanSave', '/std_msgs/Bool')
+
+var topicStrategySave = new RosTopic(ros, '/scan_black/strategy_save', '/std_msgs/Bool')
 // =======================================================================
 /* ros param
 
 */
 
-var paramScanBlack = new RosParam(ros,'/mobile_platform/scan_black')
+var paramScanBlack = new RosParam(ros, '/mobile_platform/scan_black')
+var paramStrategy = new RosParam(ros, '/mobile_platform/strategy')
+
+var paramMinVel = new RosParam(ros, '/mobile_platform/strategy/minVel')
+var paramVelYaw = new RosParam(ros, '/mobile_platform/strategy/velYaw')
+var paramRotateYaw = new RosParam(ros, '/mobile_platform/strategy/rotateYaw')
+var paramCrossTime = new RosParam(ros, '/mobile_platform/strategy/crossTime')
+var paramErrorRotate0 = new RosParam(ros, '/mobile_platform/strategy/errorRotate0')
+var paramErrorRotate90 = new RosParam(ros, '/mobile_platform/strategy/errorRotate90')
+var paramRotateSlowAng= new RosParam(ros, '/mobile_platform/strategy/rotateSlowAng')
+var paramErrorAng= new RosParam(ros, '/mobile_platform/strategy/errorAng')
+var paramErrorMoibledis = new RosParam(ros, '/mobile_platform/errorMoibledis')
+var paramErrorMoibleAng= new RosParam(ros, '/mobile_platform/errorMoibleAng')
+var paramErrorCorrectionDis= new RosParam(ros, '/mobile_platform/errorCorrectionDis')

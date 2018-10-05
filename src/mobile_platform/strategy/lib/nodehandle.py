@@ -48,6 +48,7 @@ class NodeHandle(object):
             errorAng: 校正誤差
             errorMoibledis: 機器人追線時 低於距離(pixel)校正車頭角
             errorMoibleAng: 機器人追線時 校正誤差
+            errorCorrectionDis: 
         scan infomation
             dis: 各點平均誤差(pixel)
             ang: 線與車頭之夾角

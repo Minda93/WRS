@@ -9,4 +9,8 @@ function Init(){
     setTimeout(function(){
         Init_ScanBlack_Param();
     },500);
+
+    setTimeout(function(){
+        Init_Strategy_Param();
+    },500);
 }

@@ -40,7 +40,8 @@ def main():
         if(robot._param.start):
             robot.Process()
         else:
-            print("Don't start up Strategy")    
+            print("Don't start up Strategy")
+            Strategy.Robot_Stop()
         rate.sleep()
     try:
         rospy.spin()

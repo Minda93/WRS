@@ -241,3 +241,11 @@ document.getElementById("scan_save").addEventListener("click", function(){
     topicScanSave.Pub(msg);
 });
 
+document.getElementById("strategy_save").addEventListener("click", function(){
+    console.log("STRATEGY SAVE")
+    Set_Strategy_Param();
+    var msg = new ROSLIB.Message({
+        data: true
+    });
+    topicStrategySave.Pub(msg);
+});
