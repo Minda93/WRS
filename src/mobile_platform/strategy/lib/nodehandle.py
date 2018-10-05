@@ -71,7 +71,7 @@ class NodeHandle(object):
         self.__minVel = 25.0
         self.__velYaw = 25.0
         self.__rotateYaw = 45.0
-        self.__crossTime = 0.3
+        self.__crossTime = 0.5
 
         self.__errorRotate0 = 8.0
         self.__errorRotate90 = 83.0

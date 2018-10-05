@@ -225,6 +225,7 @@ class Strategy(object):
                         if(self._param.stopPoint == '1'):
                             self.Voice_Start()
                         elif(self._param.stopPoint == '2'):
+                            print('state 2')
                             self.Dual_Arm_Start()
                         self.homeTimes += 1
 
