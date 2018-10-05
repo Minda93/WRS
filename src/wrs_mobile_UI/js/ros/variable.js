@@ -50,7 +50,7 @@ var joystick_V = {
 var topicRemote = new RosTopic(ros, '/motion/remote', '/std_msgs/Bool')
 var topicCmdvel = new RosTopic(ros, '/motion/cmd_vel', '/geometry_msgs/Twist')
 
-var topicStart = new RosTopic(ros, '/scan_black/scan_start', '/std_msgs/Bool')
+var topicStart = new RosTopic(ros, '/scan_black/strategy_start', '/std_msgs/Bool')
 var topicBehavior = new RosTopic(ros, '/scan_black/strategy_behavior', '/std_msgs/Int32')
 
 var topicScanMiddleY = new RosTopic(ros, '/scan_black/middleY', '/std_msgs/Int32')

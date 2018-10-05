@@ -94,26 +94,33 @@ function Robot_Stop() {
  */
 /*--------------------------------------------------------*/
 // start
-function pub_topic() {
-    console.log(1111);
+document.getElementsByName("strategy_state")[0].addEventListener("click", function(){
+    console.log('Start');
     var msg = new ROSLIB.Message({
         data: true
     });
     topicStart.Pub(msg)
-}
+});
+document.getElementsByName("strategy_state")[1].addEventListener("click", function(){
+    console.log('Stop');
+    var msg = new ROSLIB.Message({
+        data: false
+    });
+    topicStart.Pub(msg)
+});
 /*--------------------------------------------------------*/
 // behavior
 document.getElementsByName("strategy_button")[0].addEventListener("click", function(){
-    console.log('mobile');
+    console.log('INIT');
     var msg = new ROSLIB.Message({
-        data: 0
+        data: 10
     });
     topicBehavior.Pub(msg);
 });
 document.getElementsByName("strategy_button")[1].addEventListener("click", function(){
-    console.log('correction');
+    console.log('MOBILE_ROBOT');
     var msg = new ROSLIB.Message({
-        data: 1
+        data: 0
     });
     topicBehavior.Pub(msg);
 });
@@ -125,21 +132,35 @@ document.getElementsByName("strategy_button")[2].addEventListener("click", funct
     topicBehavior.Pub(msg);
 });
 document.getElementsByName("strategy_button")[3].addEventListener("click", function(){
-    console.log('next');
+    console.log('NEXT_POINT');
     var msg = new ROSLIB.Message({
         data: 3
     });
     topicBehavior.Pub(msg);
 });
 document.getElementsByName("strategy_button")[4].addEventListener("click", function(){
-    console.log('home');
+    console.log('DELIVERY');
+    var msg = new ROSLIB.Message({
+        data: 11
+    });
+    topicBehavior.Pub(msg);
+});
+document.getElementsByName("strategy_button")[5].addEventListener("click", function(){
+    console.log('ORDER');
+    var msg = new ROSLIB.Message({
+        data: 12
+    });
+    topicBehavior.Pub(msg);
+});
+document.getElementsByName("strategy_button")[6].addEventListener("click", function(){
+    console.log('Home');
     var msg = new ROSLIB.Message({
         data: 4
     });
     topicBehavior.Pub(msg);
 });
-document.getElementsByName("strategy_button")[5].addEventListener("click", function(){
-    console.log('manual');
+document.getElementsByName("strategy_button")[7].addEventListener("click", function(){
+    console.log('MANUAL');
     var msg = new ROSLIB.Message({
         data: 5
     });
