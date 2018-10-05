@@ -211,8 +211,8 @@ class Strategy(object):
                     # self.prev_dis = self._param.dis
                     # self.prev_ang = self._param.ang
                     # self.prev_vel = [x,y,yaw]
-                elif(self._param.stopPoint != 999 and self._param.stopPoint != '91'):
-                    print('STOP')
+                elif(self._param.stopPoint != 999 and self._param.stopPoint != '91' and self._param.stopPoint != '90'):
+                    print('STOP',self._param.stopPoint)
                     self.state = 1
                     self.Robot_Stop()
 
