@@ -167,6 +167,21 @@ document.getElementsByName("strategy_button")[7].addEventListener("click", funct
     topicBehavior.Pub(msg);
 });
 
+document.getElementsByName("strategy_button")[8].addEventListener("click", function(){
+    console.log('VOICE');
+    var msg = new ROSLIB.Message({
+        data: true
+    });
+    topicVoice.Pub(msg);
+});
+
+document.getElementsByName("strategy_button")[9].addEventListener("click", function(){
+    console.log('DUALARM');
+    var msg = new ROSLIB.Message({
+        data: true
+    });
+    topicDualarm.Pub(msg);
+});
 /*========================================================*/
 /*
     scan_black node

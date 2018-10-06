@@ -53,6 +53,9 @@ var topicCmdvel = new RosTopic(ros, '/motion/cmd_vel', '/geometry_msgs/Twist')
 var topicStart = new RosTopic(ros, '/scan_black/strategy_start', '/std_msgs/Bool')
 var topicBehavior = new RosTopic(ros, '/scan_black/strategy_behavior', '/std_msgs/Int32')
 
+var topicVoice = new RosTopic(ros, '/scan_black/voice_start', '/std_msgs/Bool')
+var topicDualarm = new RosTopic(ros, '/scan_black/dualarm_start', '/std_msgs/Bool')
+
 var topicScanMiddleY = new RosTopic(ros, '/scan_black/middleY', '/std_msgs/Int32')
 var topicScanRange = new RosTopic(ros, '/scan_black/range', '/std_msgs/Int32')
 var topicScanThreshold = new RosTopic(ros, '/scan_black/threshold', '/std_msgs/Int32')

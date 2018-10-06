@@ -41,7 +41,7 @@ def main():
             robot.Process()
         else:
             print("Don't start up Strategy")
-            Strategy.Robot_Stop()
+            robot.Robot_Stop()
         rate.sleep()
     try:
         rospy.spin()
