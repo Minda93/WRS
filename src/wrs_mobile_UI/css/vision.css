@@ -20,7 +20,7 @@
 #decide_window {
     position: absolute;
     top: 3%;
-    left: 26.5%;
+    left: 22.8%;
     height: 120px;
     width: 640px;
     background-color: rgba(0, 0, 0);
@@ -42,7 +42,7 @@
 #image_window {
     position: relative;
     top: 0%;
-    left: 1.8%;
+    left: 3.7%;
     height: 480px;
     width: 640px;
     background-color: rgba(0, 0, 0);
