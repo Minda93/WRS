@@ -11,6 +11,9 @@ import cv2
 # lib 
 from lib.nodehandle import NodeHandle
 
+# rostopic 
+from geometry_msgs.msg import Pose2D
+
 # FLAG
 IMGSHOW_FLAG = True
 QRANGLE_FLAG = False
@@ -99,9 +102,9 @@ class QRcode(object):
                         outlier = A
                     dist = self.Line_Equation(mc[median1],mc[median2],mc[outlier])
                     slope = self.Line_Slope(mc[median1],mc[median2])
-                    center_dis = self.Calculator_Center_Dis(mc[median2],mc[outlier])
-                    print(center_dis)
-                    self.Pub_Angle(True,dist,slope)
+                    center_vec = self.Calculator_Center_Vector(mc[median1],mc[median2])
+                    # print(center_dis)
+                    self.Pub_Angle(True,dist,slope,center_vec)
                     
                     if(QRANGLE_FLAG):
                         if(slope < 0 and dist < 0):
@@ -115,13 +118,16 @@ class QRcode(object):
                                 print(3,(math.atan(slope)*180/3.14)+225)
                         elif(slope > 0 and dist > 0):
                             print(4,(math.atan(slope)*180/3.14)-135)
+                    
+                    if(IMGSHOW_FLAG):
+                        cv2.imshow('dst',self._param.img)
                 else:
                     pass
-                    # print('Mark too low')
+                    print('Mark too low')
                     # self.Pub_Angle(False,0,0)
             else:
                 print('Not Found')
-                self.Pub_Angle(False,0,0)
+                self.Pub_Angle(False,0,0,(0,0))
                     
 
             
@@ -157,17 +163,19 @@ class QRcode(object):
         else:
             return 999
 
-    def Calculator_Center_Dis(self,P,Q):
+    def Calculator_Center_Vector(self,P,Q):
         center = (int((P[0]+Q[0])/2),int((P[1]+Q[1])/2))
         rows,cols = self._param.img.shape[:2]
         img_center = (int(cols/2),int(rows/2))
+        cv2.circle(self._param.img,center, 5, (255,0,0), -1)
+        cv2.circle(self._param.img,img_center, 5, (0,0,255), -1)
 
-        return self.PQ_Distance(center,img_center)      
+        # print(center[0]-img_center[0],center[1]-img_center[1]) 
+        return (center[0]-img_center[0],center[1]-img_center[1])     
         
 
-
         
-    def Pub_Angle(self,find,dist,slope):
+    def Pub_Angle(self,find,dist,slope,vector):
         if(find):
             angle = (math.atan(slope)*180/3.14)
             if(slope < 0 and dist < 0):
@@ -183,8 +191,12 @@ class QRcode(object):
                 self._param.ang = angle-135
         else:
             self._param.ang = 999
-            
-        self._param.pub_qrangle.publish(self._param.ang)
+        
+        pose = Pose2D()
+        pose.x = vector[0]
+        pose.y = vector[1]
+        pose.theta = self._param.ang
+        self._param.pub_qrangle.publish(pose)
         
         
 

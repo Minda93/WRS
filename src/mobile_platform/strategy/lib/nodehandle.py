@@ -8,7 +8,10 @@ import subprocess
 # rostopic msg
 from mobile_platform.msg import scaninfo
 from std_msgs.msg import Int32,Float32,Float64,Bool,String
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist,Pose2D
+
+
+from mobile_platform.srv import strategy_start,strategy_startResponse
 
 # define behavior 
 MOBILE_ROBOT = 0
@@ -53,6 +56,10 @@ class NodeHandle(object):
             dis: 各點平均誤差(pixel)
             ang: 線與車頭之夾角
             scanstate: 紅外線數位值
+        QRCODE
+            qrX 
+            qrY
+            qrTheta
         IMU
             qrang: 180 ~ -180 degree
         RFID
@@ -86,12 +93,17 @@ class NodeHandle(object):
         self.__ang = None
         self.__scanState = None
 
+        self.__qrX = None 
+        self.__qrY = None
+        self.__qrTheta = None
+
         self.__qrang = None
 
         self.__stopPoint = 999
 
         self.Load_Param()
 
+        """ topic pub """
         self.pub_cmdvel = rospy.Publisher('motion/cmd_vel',Twist, queue_size = 1)
         self.pub_behavior = rospy.Publisher('scan_black/strategy_behavior',Int32, queue_size = 1)
         self.pub_dualArm = rospy.Publisher('scan_black/dualarm_start',Bool, queue_size = 1)
@@ -99,15 +111,19 @@ class NodeHandle(object):
         self.pub_startCamera = rospy.Publisher('scan_black/scanStart',Bool, queue_size = 1)
         self.pub_resetImu = rospy.Publisher('scan_black/resetImu',Bool, queue_size = 1)
 
+        """ topic sub """
         rospy.Subscriber("scan_black/strategy_start",Bool,self.Sub_Start)
         rospy.Subscriber("scan_black/strategy_behavior",Int32,self.Sub_Behavior)
         rospy.Subscriber("scan_black/strategy_save",Bool,self.Save_Param)
 
         rospy.Subscriber("scan_black/scaninfo",scaninfo,self.Sub_ScanInfo)
-        # rospy.Subscriber("scan_black/qrcode_angle",Float32,self.Sub_QRAngle)
-        rospy.Subscriber("/imu_data",Float64,self.Sub_QRAngle)
+        rospy.Subscriber("scan_black/qrcode_angle",Pose2D,self.Sub_QRAngle)
+        rospy.Subscriber("/imu_data",Float64,self.Sub_IMUAngle)
         rospy.Subscriber("/rfid",String,self.Sub_RFID)
-    
+
+        """ services response """
+        rospy.Service('scan_black/strategy_start', strategy_start,self.Res_Start)
+
     def Sub_ScanInfo(self,msg):
         self.__dis = msg.dis
         self.__ang = msg.angle
@@ -118,6 +134,10 @@ class NodeHandle(object):
         self.__behavior = msg.data
         self.__loadParam = True
     def Sub_QRAngle(self,msg):
+        self.__qrX = msg.x
+        self.__qrY = msg.y
+        self.__qrTheta = msg.theta
+    def Sub_IMUAngle(self,msg):
         self.__qrang = msg.data
     def Sub_RFID(self,msg):
         self.__stopPoint = msg.data
@@ -172,6 +192,10 @@ class NodeHandle(object):
         rospy.set_param('mobile_platform/strategy/errorMoibledis', self.__errorMoibledis)
         rospy.set_param('mobile_platform/strategy/errorMoibleAng', self.__errorMoibleAng)
         rospy.set_param('mobile_platform/strategy/errorCorrectionDis', self.__errorCorrectionDis)
+    
+    def Res_Start(self,req):
+        self.__start = req.data
+        return strategy_startResponse(True)
     
     ''' strategy '''
     @property
@@ -322,6 +346,31 @@ class NodeHandle(object):
     @scanState.setter
     def scanState(self, value):
         self.__scanState = value
+
+    ''' QRCODE '''
+    @property
+    def qrX(self):
+        return self.__qrX
+
+    @qrX.setter
+    def qrX(self, value):
+        self.__qrX = value
+
+    @property
+    def qrY(self):
+        return self.__qrY
+
+    @qrY.setter
+    def qrY(self, value):
+        self.__qrY = value
+
+    @property
+    def qrTheta(self):
+        return self.__qrTheta
+
+    @qrTheta.setter
+    def qrTheta(self, value):
+        self.__qrTheta = value
     
     
     ''' IMU '''

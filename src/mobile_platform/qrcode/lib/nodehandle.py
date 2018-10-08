@@ -5,7 +5,8 @@ import rospy
 import rospkg
 
 # rostopic 
-from std_msgs.msg import Float32,Bool
+from std_msgs.msg import Bool
+from geometry_msgs.msg import Pose2D
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 
@@ -24,7 +25,7 @@ class NodeHandle(object):
         self.__loadParam = False
 
         # publish
-        self.pub_qrangle = rospy.Publisher('scan_black/qrcode_angle',Float32, queue_size = 1)
+        self.pub_qrangle = rospy.Publisher('scan_black/qrcode_angle',Pose2D, queue_size = 1)
 
         # subscriber
         rospy.Subscriber("usb_cam/image_raw",Image,self.Sub_Img)
