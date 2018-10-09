@@ -32,7 +32,7 @@ class QRcode(object):
             
             # 二值化
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
-            ret,thresh = cv2.threshold(imgray,80,255,cv2.THRESH_BINARY)
+            ret,thresh = cv2.threshold(imgray,120,255,cv2.THRESH_BINARY)
             eroded = cv2.erode(thresh,kernel)
             thresh = cv2.dilate(eroded,kernel)
             # thresh = cv2.dilate(thresh,kernel)

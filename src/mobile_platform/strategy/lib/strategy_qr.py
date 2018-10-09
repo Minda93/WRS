@@ -269,13 +269,13 @@ class Strategy(object):
                     if(RPang > 0):
                         x = 0
                         y = 0
-                        # yaw = self._param.velYaw
-                        yaw = self._param.rotateYaw
+                        yaw = self._param.velYaw
+                        # yaw = self._param.rotateYaw
                     else:
                         x = 0
                         y = 0
-                        # yaw = -self._param.velYaw
-                        yaw = -self._param.rotateYaw
+                        yaw = -self._param.velYaw
+                        # yaw = -self._param.rotateYaw
 
                     self.Robot_Vel([x,y,yaw])
                     print('CORRECTION','FRONT',self._param.qrTheta)
@@ -485,6 +485,8 @@ class Strategy(object):
             else:
                 if(self.homeTimes == int(self._param.stopPoint)):
                     self.homeTimes -= 1
+                    self._param.behavior = CROSS
+                elif(self._param.stopPoint == 999):
                     self._param.behavior = CROSS
                 else:
                     self._param.behavior = MOBILE_ROBOT
