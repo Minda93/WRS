@@ -71,8 +71,8 @@ class Strategy(object):
             self.controlY = PIDControl_Y()
             self.controlYaw = PIDControl_Yaw()
 
-            self.controlQRX = PIDControl_Qr(30.0,0.33,22.0)
-            self.controlQRY = PIDControl_Qr(30.0,0.33,22.0)
+            self.controlQRX = PIDControl_Qr(20.0,0.001,10.0)
+            self.controlQRY = PIDControl_Qr(30.0,0.001,22.0)
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         
@@ -261,7 +261,16 @@ class Strategy(object):
 
     def Correction_Strategy(self):
         y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
-        if(self._param.dis < self._param.errorCorrectionDis):
+        if(self._param.qrX == None):
+            print('fuck!!!!!!!!!!!!!!!!')
+            dis = 0
+        else:
+            print('fuck!!!!!!!!!!!!!!!!',self._param.errorCorrectionDis)
+            # dis = math.sqrt(math.pow(self._param.qrX,2.0)+math.pow(self._param.qrY,2.0))
+            dis = self._param.qrY
+            
+        # if(self._param.dis < self._param.errorCorrectionDis):
+        if(abs(dis) < self._param.errorCorrectionDis):
             if(self._param.qrTheta is not None and self._param.qrTheta != 999):
                 RPang = self.Norm_Angle(self.rotateAng - self._param.qrTheta)
                 if(abs(RPang) > self._param.errorAng):
@@ -309,10 +318,14 @@ class Strategy(object):
                         self.initPID = 1
             self._param.qrTheta = 999
         else:
-            x = 0
+            # x = 0
             yaw = 0
+            y = 0
+            x = self.controlQRX.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
+            # y = self.controlQRY.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
             self.Robot_Vel([x,y,yaw])
-            print('CORRECTION','dis',y)
+            print('CORRECTION','dis',dis)
+            self._param.qrX = None
     
     def Platform_Strategy(self):
         print('PLATFORM')
@@ -336,34 +349,44 @@ class Strategy(object):
         # yaw = self.controlYaw(self._param.qrTheta,self._param.velYaw)
         if(self._param.qrTheta is not None and self._param.qrTheta != 999):
             RPang = self.Norm_Angle(self.rotateAng - self._param.qrTheta)
-            x = self.controlQRX.Process(self._param.qrX,self._param.qrTheta,self._param.minVel)
-            y = self.controlQRY.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
+            x = self.controlQRX.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
+            y = self.controlQRY.Process(self._param.qrX,self._param.qrTheta,self._param.minVel)
             if(abs(RPang) > self._param.errorAng and RPang > self._param.rotateSlowAng):
                 if(RPang > 0):
                     # x = 0
                     # y = 0
                     yaw = self._param.velYaw
+                    # yaw = self._param.velYaw*0.8
+                    # yaw = 0
                     # yaw = self._param.rotateYaw
                 else:
                     # x = 0
                     # y = 0
-                    yaw = -self._param.velYaw
+                    yaw = self._param.velYaw
+                    # yaw = -self._param.velYaw*0.8
+                    # yaw = 0
                     # yaw = -self._param.rotateYaw
                 self.Robot_Vel([x,y,yaw])
-                print('ROTATE','angle',self._param.qrTheta)
+                # print('ROTATE','angle',self._param.qrTheta)
+                print('ROTATE','vector',x,y)
             elif((abs(RPang) > self._param.errorAng and RPang <= self._param.rotateSlowAng)):
                 if(RPang > 0):
                     # x = 0
                     # y = 0
                     yaw = self._param.velYaw
+                    # yaw = self._param.velYaw*0.8
+                    # yaw = 0
                     # yaw = self._param.rotateYaw*0.8
                 else:
                     # x = 0
                     # y = 0
                     yaw = -self._param.velYaw
+                    # yaw = self._param.velYaw*0.8
+                    # yaw = 0
                     # yaw = -self._param.rotateYaw*0.8
                 self.Robot_Vel([x,y,yaw])
-                print('ROTATE','angle',self._param.qrTheta)
+                # print('ROTATE','angle',self._param.qrTheta)
+                print('ROTATE','vector',x,y)
             else:
                 self.Robot_Stop()
                 self.Robot_Stop()

@@ -177,7 +177,8 @@ class QRcode(object):
         cv2.circle(self._param.img,img_center, 5, (0,0,255), -1)
 
         # print(center[0]-img_center[0],center[1]-img_center[1]) 
-        return (center[0]-img_center[0],center[1]-img_center[1])     
+        # return (center[0]-img_center[0],center[1]-img_center[1])
+        return (img_center[0]-center[0],img_center[1]-center[1])     
         
 
         

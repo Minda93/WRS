@@ -120,19 +120,19 @@ class PIDControl_Qr(object):
         derivative = dis - self.lastError
         self.lastError = dis
         turn = self._kp*dis+self._ki*self.prevIntegral+self._kd*derivative
-        y = turn/1000.0
+        y = turn/500.0
 
         # if(y > minVel-2):
         #     y = minVel-2
         # elif(y < -(minVel-2)):
         #     y = -(minVel-2)
 
-        # if(dis > 30):
-        #     return y
-        # elif(dis < -30):
-        #     return y
-        # else:
-        #     return 0.0
+        if(dis > 20):
+            return y
+        elif(dis < -20):
+            return y
+        else:
+            return 0.0
 
-        return y
+        # return y
     
