@@ -13,7 +13,7 @@ from sensor_msgs.msg import Image
 
 # FILENAME 
 
-FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'test1.yaml'
+FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'vision.yaml'
 
 class NodeHandle(object):
     '''

@@ -41,6 +41,43 @@ const Init_ScanBlack_Param = async () => {
 
 /*========================================================*/
 /*
+    qrcode node
+ */
+/*--------------------------------------------------------*/
+
+const Init_QRcode_Param = async () => {
+    try {
+        const param = await paramQRcode.Get();
+        var obj = document.getElementsByName("QrcodeElement");
+        if (param != null) {
+            for (var item in param) {
+                switch (item) {
+                    case "threshold":
+                        obj[0].value = parseInt(param.threshold);
+                        obj[1].value = parseInt(param.threshold);
+                        break;
+                    case "cannyMin":
+                        obj[2].value = parseInt(param.cannyMin);
+                        obj[3].value = parseInt(param.cannyMin);
+                        break;
+                    case "cannyMax":
+                        obj[4].value = parseInt(param.cannyMax);
+                        obj[5].value = parseInt(param.cannyMax);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            console.log("QRcode_PARAM : default");
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+/*========================================================*/
+/*
     Strategy node
  */
 /*--------------------------------------------------------*/

@@ -37,8 +37,9 @@ def main():
         #         image.Process(frame)
         #         cv2.imshow('src',frame)
         #         cv2.waitKey(1)
-        image.Process()
-        rate.sleep()
+        if(image._param.start):
+            image.Process()
+            rate.sleep()
     try:
         rospy.spin()
     except KeyboardInterrupt:

@@ -141,7 +141,56 @@
                                                 </table>
                                             </div>
                                             <div id="qrcode_setting" class="tab-pane fade">
-                                                <label>None</label>
+                                                <table class="param_table">
+                                                    <tr class="qr_param_tr">
+                                                        <td>
+                                                            <label>Threshold</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="QrcodeElement" min="0" max="255"
+                                                                value="0" oninput="rangeValue(this.value,this.name,1);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="QrcodeElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="255" oninput="rangeValue(this.value,this.name,0);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="qr_param_tr">
+                                                        <td>
+                                                            <label>CannyMin</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="QrcodeElement" min="0" max="255"
+                                                                value="0" oninput="rangeValue(this.value,this.name,3);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="QrcodeElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="255" oninput="rangeValue(this.value,this.name,2);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="qr_param_tr">
+                                                        <td>
+                                                            <label>CannyMax</label>
+                                                        </td>
+                                                        <td>
+                                                            <input type="range" name="QrcodeElement" min="0" max="255"
+                                                                value="0" oninput="rangeValue(this.value,this.name,5);" />
+                                                        </td>
+                                                        <td>
+                                                            <input name="QrcodeElement" placeholder="Speed" value="0"
+                                                                type="number" min="0" max="255" oninput="rangeValue(this.value,this.name,4);" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                            <button id="qrcode_save" class="btn btn-primary" value="0">SAVE</button>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                             <div id="strategy_setting" class="tab-pane fade in active">
                                                 <table class="param_table">

@@ -244,9 +244,55 @@ document.getElementsByName("ScanElement")[7].addEventListener("input", function(
     });
     topicScanWeight.Pub(msg);
 });
-
+/*========================================================*/
+/*
+    qrcode node
+ */
 /*--------------------------------------------------------*/
-/* save */
+// threshold
+document.getElementsByName("QrcodeElement")[0].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRThreshold.Pub(msg);
+});
+document.getElementsByName("QrcodeElement")[1].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRThreshold.Pub(msg);
+});
+// cannyMin
+document.getElementsByName("QrcodeElement")[2].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRCannyMin.Pub(msg);
+});
+document.getElementsByName("QrcodeElement")[3].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRCannyMin.Pub(msg);
+});
+// cannyMax
+document.getElementsByName("QrcodeElement")[4].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRCannyMax.Pub(msg);
+});
+document.getElementsByName("QrcodeElement")[5].addEventListener("input", function(){
+    var msg = new ROSLIB.Message({
+        data: parseInt(this.value)
+    });
+    topicQRCannyMax.Pub(msg);
+});
+/*========================================================*/
+/*
+    save 
+ */
+/*--------------------------------------------------------*/
 
 document.getElementById("scan_save").addEventListener("click", function(){
     console.log("SCAN SAVE")
@@ -254,6 +300,14 @@ document.getElementById("scan_save").addEventListener("click", function(){
         data: true
     });
     topicScanSave.Pub(msg);
+});
+
+document.getElementById("qrcode_save").addEventListener("click", function(){
+    console.log("QRCODE SAVE")
+    var msg = new ROSLIB.Message({
+        data: true
+    });
+    topicQRSave.Pub(msg);
 });
 
 document.getElementById("strategy_save").addEventListener("click", function(){

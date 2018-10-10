@@ -63,6 +63,11 @@ var topicScanWeight = new RosTopic(ros, '/scan_black/weight', '/std_msgs/Int32')
 var topicScanSave = new RosTopic(ros, '/scan_black/scanSave', '/std_msgs/Bool')
 
 var topicStrategySave = new RosTopic(ros, '/scan_black/strategy_save', '/std_msgs/Bool')
+
+var topicQRThreshold = new RosTopic(ros, '/scan_black/qrcode_threshold', '/std_msgs/Int32')
+var topicQRCannyMin = new RosTopic(ros, '/scan_black/qrcode_cannyMin', '/std_msgs/Int32')
+var topicQRCannyMax = new RosTopic(ros, '/scan_black/qrcode_cannyMax', '/std_msgs/Int32')
+var topicQRSave = new RosTopic(ros, '/scan_black/qrcode_save', '/std_msgs/Bool')
 // =======================================================================
 /* ros param
 
@@ -70,6 +75,7 @@ var topicStrategySave = new RosTopic(ros, '/scan_black/strategy_save', '/std_msg
 
 var paramScanBlack = new RosParam(ros, '/mobile_platform/scan_black')
 var paramStrategy = new RosParam(ros, '/mobile_platform/strategy')
+var paramQRcode = new RosParam(ros, '/mobile_platform/qrcode')
 
 var paramMinVel = new RosParam(ros, '/mobile_platform/strategy/minVel')
 var paramVelYaw = new RosParam(ros, '/mobile_platform/strategy/velYaw')

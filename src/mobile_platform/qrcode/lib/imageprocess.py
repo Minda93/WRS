@@ -32,22 +32,27 @@ class QRcode(object):
             
             # 二值化
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
-            ret,thresh = cv2.threshold(imgray,120,255,cv2.THRESH_BINARY)
+            ret,thresh = cv2.threshold(imgray,self._param.threshold,255,cv2.THRESH_BINARY)
             eroded = cv2.erode(thresh,kernel)
             thresh = cv2.dilate(eroded,kernel)
             # thresh = cv2.dilate(thresh,kernel)
 
             # 邊緣化
-            edges = cv2.Canny(thresh,30,100)
+            if(self._param.cannyMin <= self._param.cannyMax):
+                edges = cv2.Canny(thresh,self._param.cannyMin,self._param.cannyMax)
+            else:
+                edges = cv2.Canny(thresh,self._param.cannyMax,self._param.cannyMin)
             # kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(3, 3))
             # edges = cv2.dilate(edges,kernel)
             
             _, self.contours, self.hierarchy = cv2.findContours(edges,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
             
-            if(IMGSHOW_FLAG):
+            if(IMGSHOW_FLAG and self._param.imgShow):
                 cv2.imshow('thresh',thresh)
                 cv2.imshow('edge',edges)
                 cv2.waitKey(1)
+            else:
+                cv2.destroyAllWindows()
             if(self.contours):
                 mark = 0
                 mu = []
@@ -119,8 +124,9 @@ class QRcode(object):
                         elif(slope > 0 and dist > 0):
                             print(4,(math.atan(slope)*180/3.14)-135)
                     
-                    if(IMGSHOW_FLAG):
+                    if(IMGSHOW_FLAG and self._param.imgShow):
                         cv2.imshow('dst',self._param.img)
+                    
                 else:
                     pass
                     print('Mark too low')
