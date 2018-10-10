@@ -29,9 +29,10 @@ DELIVERY = 11
 ORDER = 12
 
 # FILENAME 
-# FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage1_imu.yaml'
-# FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage1_rfid.yaml'
-FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage1_qr.yaml'
+# FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_imu.yaml'
+# FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_rfid.yaml'
+FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_qr.yaml'
+
 class NodeHandle(object):
     '''
         strategy

@@ -7,7 +7,7 @@ import numpy as np
 
 # lib
 from lib.nodehandle import NodeHandle
-from lib.pidcontrol import PIDControl,PIDControl_Y,PIDControl_Yaw
+from lib.pidcontrol import PIDControl,PIDControl_Y,PIDControl_Yaw,PIDControl_Qr
 from lib.fuzzycontrol import FUZZYControl
 from lib.counter import TimeCounter
 
@@ -34,7 +34,6 @@ ORDER = 12
 # FLAG 
 CONTROL = 'PIDCONTROL'
 # CONTROL = 'FUZZYCONTROL'
-IMU_FLAG = True
 
 '''
     HOME -> FIRST
@@ -80,6 +79,9 @@ class Strategy(object):
             self.control = PIDControl()
             self.controlY = PIDControl_Y()
             self.controlYaw = PIDControl_Yaw()
+
+            self.controlQRX = PIDControl_Qr(30.0,0.33,22.0)
+            self.controlQRY = PIDControl_Qr(30.0,0.33,22.0)
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         

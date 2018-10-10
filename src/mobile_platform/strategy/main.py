@@ -20,6 +20,10 @@ from lib.strategy_qr import Strategy
 # from lib.strategy2 import Strategy
 ''' rfid '''
 # from lib.strategy2_rfid import Strategy
+
+''' qrcode '''
+# from lib.strategy2 _qr import Strategy
+
 ''' stage 3 '''
 ''' imu '''
 ''' rfid '''

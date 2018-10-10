@@ -211,8 +211,8 @@ class Strategy(object):
                     # self.prev_dis = self._param.dis
                     # self.prev_ang = self._param.ang
                     # self.prev_vel = [x,y,yaw]
-                elif(self._param.stopPoint != 999 and self._param.stopPoint != '91'):
-                    print('STOP')
+                elif(self._param.stopPoint != 999 and self._param.stopPoint != '91' and self._param.stopPoint != '90'):
+                    print('STOP',self._param.stopPoint)
                     self.state = 1
                     self.Robot_Stop()
 
@@ -225,6 +225,7 @@ class Strategy(object):
                         if(self._param.stopPoint == '1'):
                             self.Voice_Start()
                         elif(self._param.stopPoint == '2'):
+                            print('state 2')
                             self.Dual_Arm_Start()
                         self.homeTimes += 1
 
@@ -255,8 +256,8 @@ class Strategy(object):
     def Correction_Strategy(self):
         y = self.controlY.Process(self._param.dis,self._param.ang,self._param.minVel)
         if(self._param.dis < self._param.errorCorrectionDis):
-            if(self._param.qrang is not None and self._param.qrang != 999):
-                RPang = self.Norm_Angle(self.rotateAng - self._param.qrang)
+            if(self._param.qrTheta is not None and self._param.qrTheta != 999):
+                RPang = self.Norm_Angle(self.rotateAng - self._param.qrTheta)
                 if(abs(RPang) > self._param.errorAng):
                     if(RPang > 0):
                         x = 0
@@ -270,7 +271,7 @@ class Strategy(object):
                         yaw = -self._param.rotateYaw
 
                     self.Robot_Vel([x,y,yaw])
-                    print('CORRECTION','FRONT',self._param.qrang)
+                    print('CORRECTION','FRONT',self._param.qrTheta)
                 else:
                     self.Robot_Stop()
                     self.Robot_Stop()
@@ -300,7 +301,7 @@ class Strategy(object):
                         self._param.behavior = PLATFORM
                         self.rotateAng = self._param.errorRotate0  
                         self.initPID = 1
-            self._param.qrang = 999
+            self._param.qrTheta = 999
         else:
             x = 0
             yaw = 0
@@ -327,27 +328,40 @@ class Strategy(object):
         
             
     def Rotate_Strategy(self):
-        if(self.rotateAng == self._param.errorRotate90):
-            print('rotate 90')
-            x = 0
-            y = 0
-            yaw = self._param.rotateYaw
-            self.Robot_Vel([x,y,yaw])
-            if(self._param.stopPoint == '90'):
-                self.Robot_Stop()
-                if(self.rotateFlag == 1):
-                    self._param.behavior = PLATFORM
-                    print('ROTATE PLATFORM')
+        # yaw = self.controlYaw(self._param.qrTheta,self._param.velYaw)
+        if(self._param.qrTheta is not None and self._param.qrTheta != 999):
+            RPang = self.Norm_Angle(self.rotateAng - self._param.qrTheta)
+            x = self.controlQRX.Process(self._param.qrX,self._param.qrTheta,self._param.minVel)
+            y = self.controlQRY.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
+            if(abs(RPang) > self._param.errorAng and RPang > self._param.rotateSlowAng):
+                if(RPang > 0):
+                    # x = 0
+                    # y = 0
+                    yaw = self._param.velYaw
+                    # yaw = self._param.rotateYaw
                 else:
-                    self._param.behavior = PLATFORM
-                    print('ROTATE FUCK')
-        elif(self.rotateAng == self._param.errorRotate0):
-            print('rotate 0')
-            x = 0
-            y = 0
-            yaw = -self._param.rotateYaw
-            self.Robot_Vel([x,y,yaw])
-            if(self._param.stopPoint == '91' or self._param.stopPoint == '1' or self._param.stopPoint == '2'):
+                    # x = 0
+                    # y = 0
+                    yaw = -self._param.velYaw
+                    # yaw = -self._param.rotateYaw
+                self.Robot_Vel([x,y,yaw])
+                print('ROTATE','angle',self._param.qrTheta)
+            elif((abs(RPang) > self._param.errorAng and RPang <= self._param.rotateSlowAng)):
+                if(RPang > 0):
+                    # x = 0
+                    # y = 0
+                    yaw = self._param.velYaw
+                    # yaw = self._param.rotateYaw*0.8
+                else:
+                    # x = 0
+                    # y = 0
+                    yaw = -self._param.velYaw
+                    # yaw = -self._param.rotateYaw*0.8
+                self.Robot_Vel([x,y,yaw])
+                print('ROTATE','angle',self._param.qrTheta)
+            else:
+                self.Robot_Stop()
+                self.Robot_Stop()
                 self.Robot_Stop()
                 if(self.rotateFlag == 1):
                     self._param.behavior = PLATFORM
@@ -355,6 +369,21 @@ class Strategy(object):
                 else:
                     self._param.behavior = CROSS
                     print('ROTATE CROSS')
+            self.not_find = 0
+        else:
+            print('ROTATE not find')
+            if(self.not_find < 100):
+                self.not_find += 1
+                # self.Robot_Stop()
+            else:
+                self.not_find = 0
+                if(self.rotateAng == self._param.errorRotate90):
+                    self._param.behavior = CORRECTION
+                    print('ROTATE COREECTION')
+                else:
+                    self._param.behavior = CROSS
+                    print('ROTATE CROSS')
+        self._param.qrTheta = 999
     
     def Go_Point_Strategy(self):
         time,state = self.timer.Process()
@@ -401,7 +430,7 @@ class Strategy(object):
             self.Robot_Vel([x,y,yaw])
         # if(self.pre_state == 1 and self.state == 0):
         #     if(self._param.scanState):
-        #         if(self._param.qrang is not None and self._param.qrang != 999):
+        #         if(self._param.qrTheta is not None and self._param.qrTheta != 999):
         #             x = self._param.minVel
         #             y = 0
         #             yaw = 0
@@ -420,7 +449,7 @@ class Strategy(object):
         #             yaw = 0
         #             # self.Robot_Vel([y,-x,yaw])
         #             self.Robot_Vel([x,y,yaw])
-        #         self._param.qrang = 999
+        #         self._param.qrTheta = 999
         # else:
         #     self.Robot_Stop()
         #     print('fuck Cross')

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch> 
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
-    <rosparam command="load" file="$(find mobile_platform)/config/stage1_rfid.yaml" ns="mobile_platform/"/>
+    <rosparam command="load" file="$(find mobile_platform)/config/stage_qr.yaml" ns="mobile_platform/"/>
     
     <node name="Mecanum_motion_node" pkg="motion" type="Mecanum_motion_node"/>
     

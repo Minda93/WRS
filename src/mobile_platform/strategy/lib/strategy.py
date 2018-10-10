@@ -461,6 +461,7 @@ class Strategy(object):
         self.homeTimes = 0
         self.Robot_Stop()
         self._param.behavior = MOBILE_ROBOT
+        self._param.stopPoint = 999
         # self.Reset_IMU()
 
     def Home_Strategy(self):
@@ -480,6 +481,8 @@ class Strategy(object):
             else:
                 if(self.homeTimes == int(self._param.stopPoint)):
                     self.homeTimes -= 1
+                    self._param.behavior = CROSS
+                elif(self._param.stopPoint == 999):
                     self._param.behavior = CROSS
                 else:
                     self._param.behavior = MOBILE_ROBOT

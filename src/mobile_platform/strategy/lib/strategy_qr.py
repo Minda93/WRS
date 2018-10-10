@@ -7,7 +7,7 @@ import numpy as np
 
 # lib
 from lib.nodehandle import NodeHandle
-from lib.pidcontrol import PIDControl,PIDControl_Y,PIDControl_Yaw
+from lib.pidcontrol import PIDControl,PIDControl_Y,PIDControl_Yaw,PIDControl_Qr
 from lib.fuzzycontrol import FUZZYControl
 from lib.counter import TimeCounter
 
@@ -32,7 +32,6 @@ INIT = 10
 # FLAG 
 CONTROL = 'PIDCONTROL'
 # CONTROL = 'FUZZYCONTROL'
-IMU_FLAG = True
 
 '''
     HOME -> FIRST
@@ -72,8 +71,8 @@ class Strategy(object):
             self.controlY = PIDControl_Y()
             self.controlYaw = PIDControl_Yaw()
 
-            self.controlQRX = PIDControl_Y()
-            self.controlQRY = PIDControl_Y()
+            self.controlQRX = PIDControl_Qr(30.0,0.33,22.0)
+            self.controlQRY = PIDControl_Qr(30.0,0.33,22.0)
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         
@@ -466,6 +465,7 @@ class Strategy(object):
         self.homeTimes = 0
         self.Robot_Stop()
         self._param.behavior = MOBILE_ROBOT
+        self._param.stopPoint = 999
         # self.Reset_IMU()
 
     def Home_Strategy(self):
