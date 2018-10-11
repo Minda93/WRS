@@ -73,9 +73,9 @@ var topicQRSave = new RosTopic(ros, '/scan_black/qrcode_save', '/std_msgs/Bool')
 
 */
 
-var paramScanBlack = new RosParam(ros, '/mobile_platform/scan_black')
+var paramScanBlack = new RosParam(ros, '/mobile_platform/vision/scan_black')
 var paramStrategy = new RosParam(ros, '/mobile_platform/strategy')
-var paramQRcode = new RosParam(ros, '/mobile_platform/qrcode')
+var paramQRcode = new RosParam(ros, '/mobile_platform/vision/qrcode')
 
 var paramMinVel = new RosParam(ros, '/mobile_platform/strategy/minVel')
 var paramVelYaw = new RosParam(ros, '/mobile_platform/strategy/velYaw')
@@ -85,6 +85,6 @@ var paramErrorRotate0 = new RosParam(ros, '/mobile_platform/strategy/errorRotate
 var paramErrorRotate90 = new RosParam(ros, '/mobile_platform/strategy/errorRotate90')
 var paramRotateSlowAng= new RosParam(ros, '/mobile_platform/strategy/rotateSlowAng')
 var paramErrorAng= new RosParam(ros, '/mobile_platform/strategy/errorAng')
-var paramErrorMoibledis = new RosParam(ros, '/mobile_platform/errorMoibledis')
-var paramErrorMoibleAng= new RosParam(ros, '/mobile_platform/errorMoibleAng')
-var paramErrorCorrectionDis= new RosParam(ros, '/mobile_platform/errorCorrectionDis')
+var paramErrorMoibledis = new RosParam(ros, '/mobile_platform/strategy/errorMoibledis')
+var paramErrorMoibleAng= new RosParam(ros, '/mobile_platform/strategy/errorMoibleAng')
+var paramErrorCorrectionDis= new RosParam(ros, '/mobile_platform/strategy/errorCorrectionDis')

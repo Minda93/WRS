@@ -93,35 +93,35 @@ class NodeHandle(object):
     
     def Save_Param(self,msg):
         self.Set_Param()
-        if (rospy.has_param('mobile_platform')):
+        if (rospy.has_param('mobile_platform/vision')):
             print('dump')
-            subprocess.call(['rosparam','dump',FILENAME,'/mobile_platform'])
+            subprocess.call(['rosparam','dump',FILENAME,'/mobile_platform/vision'])
             # self.Load_Param()
         else:
             print('Not found')
             
 
     def Load_Param(self):
-        if (rospy.has_param('mobile_platform/scan_black/middleY')):
-            self.__middleY = rospy.get_param("mobile_platform/scan_black/middleY")
-        if (rospy.has_param('mobile_platform/scan_black/range')):
-            self.__range = rospy.get_param("mobile_platform/scan_black/range")
-        if (rospy.has_param('mobile_platform/scan_black/threshold')):
-            self.__threshold = rospy.get_param("mobile_platform/scan_black/threshold")
-        if (rospy.has_param('mobile_platform/scan_black/weight')):
-            self.__weight = rospy.get_param("mobile_platform/scan_black/weight")
-        if (rospy.has_param('mobile_platform/scan_black/scanNum')):
-            self.__scanNum = rospy.get_param("mobile_platform/scan_black/scanNum")
-        if (rospy.has_param('mobile_platform/scan_black/sliceNum')):
-            self.__sliceNum = rospy.get_param("mobile_platform/scan_black/sliceNum")
+        if (rospy.has_param('mobile_platform/vision/scan_black/middleY')):
+            self.__middleY = rospy.get_param("mobile_platform/vision/scan_black/middleY")
+        if (rospy.has_param('mobile_platform/vision/scan_black/range')):
+            self.__range = rospy.get_param("mobile_platform/vision/scan_black/range")
+        if (rospy.has_param('mobile_platform/vision/scan_black/threshold')):
+            self.__threshold = rospy.get_param("mobile_platform/vision/scan_black/threshold")
+        if (rospy.has_param('mobile_platform/vision/scan_black/weight')):
+            self.__weight = rospy.get_param("mobile_platform/vision/scan_black/weight")
+        if (rospy.has_param('mobile_platform/vision/scan_black/scanNum')):
+            self.__scanNum = rospy.get_param("mobile_platform/vision/scan_black/scanNum")
+        if (rospy.has_param('mobile_platform/vision/scan_black/sliceNum')):
+            self.__sliceNum = rospy.get_param("mobile_platform/vision/scan_black/sliceNum")
 
     def Set_Param(self):
-        rospy.set_param('mobile_platform/scan_black/middleY', self.__middleY)
-        rospy.set_param('mobile_platform/scan_black/range', self.__range)
-        rospy.set_param('mobile_platform/scan_black/threshold', self.__threshold)
-        rospy.set_param('mobile_platform/scan_black/weight', self.__weight)
-        rospy.set_param('mobile_platform/scan_black/scanNum', self.__scanNum)
-        rospy.set_param('mobile_platform/scan_black/sliceNum', self.__sliceNum)
+        rospy.set_param('mobile_platform/vision/scan_black/middleY', self.__middleY)
+        rospy.set_param('mobile_platform/vision/scan_black/range', self.__range)
+        rospy.set_param('mobile_platform/vision/scan_black/threshold', self.__threshold)
+        rospy.set_param('mobile_platform/vision/scan_black/weight', self.__weight)
+        rospy.set_param('mobile_platform/vision/scan_black/scanNum', self.__scanNum)
+        rospy.set_param('mobile_platform/vision/scan_black/sliceNum', self.__sliceNum)
 
     @property
     def img(self):

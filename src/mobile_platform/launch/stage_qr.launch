@@ -2,7 +2,7 @@
 <launch> 
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
     <rosparam command="load" file="$(find mobile_platform)/config/stage_qr.yaml" ns="mobile_platform/"/>
-    <rosparam command="load" file="$(find mobile_platform)/config/vision.yaml" ns="mobile_platform/"/>
+    <rosparam command="load" file="$(find mobile_platform)/config/vision.yaml" ns="mobile_platform/vision/"/>
     
     <node name="Mecanum_motion_node" pkg="motion" type="Mecanum_motion_node"/>
     
