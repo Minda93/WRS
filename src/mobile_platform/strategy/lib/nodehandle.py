@@ -31,8 +31,8 @@ ORDER = 12
 # FILENAME 
 # FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_imu.yaml'
 # FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_rfid.yaml'
-FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_qr.yaml'
-
+# FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage_qr.yaml'
+FILENAME = rospkg.RosPack().get_path('mobile_platform')+'/config/'+'stage2_qr.yaml'
 class NodeHandle(object):
     '''
         strategy
@@ -102,7 +102,7 @@ class NodeHandle(object):
 
         self.__stopPoint = 999
 
-        self.Load_Param()
+        # self.Load_Param()
 
         """ topic pub """
         self.pub_cmdvel = rospy.Publisher('motion/cmd_vel',Twist, queue_size = 1)
