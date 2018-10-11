@@ -96,6 +96,7 @@ class Strategy(object):
         self.pre_state = 0
         self.not_find = 0
 
+        self.stopTimes = 0
         # self._kp = 6
         # self._ki = 0.1
         # self._kd = 4.0
@@ -232,7 +233,11 @@ class Strategy(object):
                             self.Dual_Arm_Start()
                         self.homeTimes += 1
 
-                self._param.stopPoint = 999
+                if(self.stopTimes >= 3):
+                    self._param.stopPoint = 999
+                    self.stopTimes = 0
+                else:
+                    self.stopTimes += 1
                 self.pre_state = self.state
             else:
                 print('Offset track !!!!!!')
