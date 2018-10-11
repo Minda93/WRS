@@ -78,7 +78,7 @@ class PIDControl_Y(object):
 class PIDControl_Yaw(object):
     def __init__(self):
         self._kp = 10.0
-        self._ki = 0.3
+        self._ki = 0.01
         self._kd = 2.0
         self.prevIntegral = 0
         self.lastError = 0
@@ -95,10 +95,10 @@ class PIDControl_Yaw(object):
         turn = self._kp*ang+self._ki*self.prevIntegral+self._kd*derivative
         turn = turn/30.0
 
-        if(turn >= (yaw+2)):
-            turn = (yaw+2)
-        elif(turn <= -(yaw+2)):
-            turn = -(yaw+2)
+        # if(turn >= (yaw+2)):
+        #     turn = (yaw+2)
+        # elif(turn <= -(yaw+2)):
+        #     turn = -(yaw+2)
 
         return turn
 

@@ -81,8 +81,8 @@ class Strategy(object):
             self.controlY = PIDControl_Y()
             self.controlYaw = PIDControl_Yaw()
 
-            self.controlQRX = PIDControl_Qr(20.0,0.001,10.0)
-            self.controlQRY = PIDControl_Qr(30.0,0.001,22.0)
+            self.controlQRX = PIDControl_Qr(20.0,0.05,10.0)
+            self.controlQRY = PIDControl_Qr(20.0,0.05,10.0)
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         

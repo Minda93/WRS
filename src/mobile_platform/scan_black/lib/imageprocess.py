@@ -276,8 +276,10 @@ class ImageProcessing(object):
         info.dis = self.scanLine.direction
         if((self.scanLine.angle*180/math.pi)>0):
             info.angle = -(self.scanLine.angle*180/math.pi)+90
-        else:
+        elif((self.scanLine.angle*180/math.pi)<=0):
             info.angle = -(self.scanLine.angle*180/math.pi)-90
+        else:
+            info.angle = 0.0
         info.scanstate = self.decideGrid.scanState
         self._param.pub_scaninfo.publish(info)
     

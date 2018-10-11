@@ -1,2 +1,2 @@
 qrcode: {cannyMax: 100, cannyMin: 55, threshold: 168}
-scan_black: {middleY: 100, range: 60, scanNum: 7, sliceNum: 10, threshold: 171, weight: 33}
+scan_black: {middleY: 100, range: 60, scanNum: 7, sliceNum: 10, threshold: 183, weight: 33}

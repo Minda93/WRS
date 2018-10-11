@@ -71,8 +71,8 @@ class Strategy(object):
             self.controlY = PIDControl_Y()
             self.controlYaw = PIDControl_Yaw()
 
-            self.controlQRX = PIDControl_Qr(20.0,0.001,10.0)
-            self.controlQRY = PIDControl_Qr(30.0,0.001,22.0)
+            self.controlQRX = PIDControl_Qr(20.0,0.05,10.0)
+            self.controlQRY = PIDControl_Qr(20.0,0.05,10.0)
         elif(CONTROL == 'FUZZYCONTROL'):
             self.control = FUZZYControl()
         
@@ -218,7 +218,7 @@ class Strategy(object):
                     else:
                         self.Robot_Vel([-x,y,yaw])
                         print(-x,y,yaw)
-
+                    # print(self._param.ang)
                     # self.prev_dis = self._param.dis
                     # self.prev_ang = self._param.ang
                     # self.prev_vel = [x,y,yaw]
@@ -265,7 +265,7 @@ class Strategy(object):
             print('fuck!!!!!!!!!!!!!!!!')
             dis = 0
         else:
-            print('fuck!!!!!!!!!!!!!!!!',self._param.errorCorrectionDis)
+            # print('fuck!!!!!!!!!!!!!!!!',self._param.errorCorrectionDis)
             # dis = math.sqrt(math.pow(self._param.qrX,2.0)+math.pow(self._param.qrY,2.0))
             dis = self._param.qrY
             
@@ -320,11 +320,11 @@ class Strategy(object):
         else:
             # x = 0
             yaw = 0
-            y = 0
+            # y = 0
             x = self.controlQRX.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
-            # y = self.controlQRY.Process(self._param.qrY,self._param.qrTheta,self._param.minVel)
+            y = self.controlQRY.Process(self._param.qrX,self._param.qrTheta,self._param.minVel)
             self.Robot_Vel([x,y,yaw])
-            print('CORRECTION','dis',dis)
+            print('CORRECTION','dis',x,y)
             self._param.qrX = None
     
     def Platform_Strategy(self):
