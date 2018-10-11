@@ -145,9 +145,9 @@ class NodeHandle(object):
 
     def Save_Param(self,msg):
         # self.Set_Param()
-        if (rospy.has_param('mobile_platform')):
+        if (rospy.has_param('mobile_platform/strategy')):
             print('dump')
-            subprocess.call(['rosparam','dump',FILENAME,'/mobile_platform'])
+            subprocess.call(['rosparam','dump',FILENAME,'/mobile_platform/strategy'])
             self.Load_Param()
         else:
             print('Not found')
