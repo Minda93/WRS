@@ -229,6 +229,10 @@ class Strategy(object):
                         self._param.behavior = HOME
                     elif(self.homeTimes == int(self._param.stopPoint)):
                         self._param.behavior = CROSS
+                    elif(self._param.stopPoint == '2'):
+                        self._param.behavior = PLATFORM
+                        print('state 2')
+                        self.Dual_Arm_Start()
                     else:
                         self._param.behavior = CORRECTION
                         self.homeTimes += 1
