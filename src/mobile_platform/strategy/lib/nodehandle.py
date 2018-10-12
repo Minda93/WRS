@@ -102,7 +102,7 @@ class NodeHandle(object):
 
         self.__stopPoint = 999
 
-        # self.Load_Param()
+        self.Load_Param()
 
         """ topic pub """
         self.pub_cmdvel = rospy.Publisher('motion/cmd_vel',Twist, queue_size = 1)
